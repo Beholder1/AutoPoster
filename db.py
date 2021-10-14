@@ -27,6 +27,10 @@ class Database:
         self.cur.execute("DELETE FROM parts WHERE id = ?", (id,))
         self.conn.commit()
 
+    def deleteA(self, email):
+        self.cur.execute("DELETE FROM parts WHERE email = ?", (email,))
+        self.conn.commit()
+
     def update(self, id, email, password):
         self.cur.execute("UPDATE parts SET email = ?, password = ? WHERE id = ?", (email, password, id))
         self.conn.commit()

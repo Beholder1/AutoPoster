@@ -7,7 +7,7 @@ db = Database("store.db")
 class AddLocation:
     def __init__(self):
         root = tk.Tk()
-        canvas = tk.Canvas(root, height=50, width=150)
+        canvas = tk.Canvas(root, height=25, width=250)
         canvas.pack()
 
         frame = tk.Frame(root)
@@ -19,7 +19,7 @@ class AddLocation:
         location.grid(row=0, column=1)
 
         button = tk.Button(frame, text="Dodaj", command=lambda: self.insertLocalization(location))
-        button.grid(row=3, column=1)
+        button.grid(row=0, column=2)
 
         root.mainloop()
 

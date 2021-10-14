@@ -2,8 +2,10 @@ import tkinter as tk
 
 from mainScript import MainScript
 
-import settings
 from product import addProduct
+from account import addAccount
+from account import editAccount
+from account import deleteAccount
 from localization import addLocation
 from localization import editLocation
 from localization import deleteLocation
@@ -16,16 +18,23 @@ root = tk.Tk()
 
 root.title("Tworzenie ogłoszeń")
 
-def openSettings():
-    settings.Settings()
 def openAddProduct():
     addProduct.AddProduct()
+
+def openAddAccount():
+    addAccount.AddAccount()
+def openEditAccount():
+    editAccount.EditAccount()
+def openDeleteAccount():
+    deleteAccount.DeleteAccount()
+
 def openAddLocation():
     addLocation.AddLocation()
 def openEditLocation():
     editLocation.EditLocation()
 def openDeleteLocation():
     deleteLocation.DeleteLocation()
+
 def openScript():
     MainScript()
 
@@ -37,9 +46,9 @@ root.config(menu=myMenu)
 
 settingsMenu = tk.Menu(myMenu, tearoff="off")
 myMenu.add_cascade(label="Konto", menu=settingsMenu)
-settingsMenu.add_command(label="Dodaj", command=openSettings)
-settingsMenu.add_command(label="Edytuj", command=openSettings)
-settingsMenu.add_command(label="Usuń", command=openSettings)
+settingsMenu.add_command(label="Dodaj", command=openAddAccount)
+settingsMenu.add_command(label="Edytuj", command=openEditAccount)
+settingsMenu.add_command(label="Usuń", command=openDeleteAccount)
 
 productsMenu = tk.Menu(myMenu, tearoff="off")
 myMenu.add_cascade(label="Produkt", menu=productsMenu)

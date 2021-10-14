@@ -3,7 +3,7 @@ from db import Database
 
 db = Database("store.db")
 
-class NewAccount:
+class AddAccount:
     def __init__(self):
         root = tk.Tk()
         canvas = tk.Canvas(root, height=75, width=150)
