@@ -1,12 +1,11 @@
 import tkinter as tk
-from tkinter import filedialog, Text
-import os
 
 from mainScript import MainScript
 
 import settings
-import addProduct
-import addLocalization
+from product import addProduct
+from localization import addLocation
+from localization import editLocation
 
 from db import Database
 db = Database("store.db")
@@ -20,25 +19,36 @@ def openSettings():
     settings.Settings()
 def openAddProduct():
     addProduct.AddProduct()
-def openAddLocalization():
-    addLocalization.AddLocalization()
+def openAddLocation():
+    addLocation.AddLocation()
+def openEditLocation():
+    editLocation.EditLocation()
 def openScript():
     MainScript()
 
 canvas = tk.Canvas(root, height = 700, width = 700)
 canvas.pack()
 
-frameMenu = tk.Frame(root)
-frameMenu.place(relwidth=1, relheight=0.1)
+myMenu = tk.Menu(root)
+root.config(menu=myMenu)
 
-settingsButton = tk.Button(frameMenu, text = "Ustawienia", command = openSettings)
-settingsButton.grid(row=0, column=0)
+settingsMenu = tk.Menu(myMenu, tearoff="off")
+myMenu.add_cascade(label="Konto", menu=settingsMenu)
+settingsMenu.add_command(label="Dodaj", command=openSettings)
+settingsMenu.add_command(label="Edytuj", command=openSettings)
+settingsMenu.add_command(label="Usuń", command=openSettings)
 
-productButton = tk.Button(frameMenu, text = "Produkty", command = openAddProduct)
-productButton.grid(row=0, column=1)
+productsMenu = tk.Menu(myMenu, tearoff="off")
+myMenu.add_cascade(label="Produkt", menu=productsMenu)
+productsMenu.add_command(label="Dodaj", command=openAddProduct)
+productsMenu.add_command(label="Edytuj", command=openAddProduct)
+productsMenu.add_command(label="Usuń", command=openAddProduct)
 
-localizationButton = tk.Button(frameMenu, text = "Lokalizacje", command = openAddLocalization)
-localizationButton.grid(row=0, column=2)
+localizationMenu = tk.Menu(myMenu, tearoff="off")
+myMenu.add_cascade(label="Lokalizacja", menu=localizationMenu)
+localizationMenu.add_command(label="Dodaj", command=openAddLocation)
+localizationMenu.add_command(label="Edytuj", command=openEditLocation)
+localizationMenu.add_command(label="Usuń", command=openAddLocation)
 
 runButton = tk.Button(root, text = "Uruchom", command = openScript)
 runButton.pack()

@@ -1,6 +1,8 @@
 import tkinter as tk
+from tkinter import ttk
 from db import Database
-import newAccount
+from account import addAccount
+
 
 class Settings:
     def __init__(self):
@@ -11,12 +13,6 @@ class Settings:
         canvas = tk.Canvas(root, height=700, width=700)
         canvas.pack()
 
-        options = [
-            "p",
-            "o"
-        ]
-        clicked = tk.StringVar(root)
-        clicked.set("Wybierz konto...")
 
         frame = tk.Frame(root)
         frame.place(relwidth=1, relheight=1)
@@ -24,8 +20,8 @@ class Settings:
         email = tk.Label(frame, text="E-mail: ")
         email.grid(row=0, column=0)
 
-        drop = tk.OptionMenu(frame, clicked, *options)
-        drop.grid(row=0, column=1)
+        combo = ttk.Combobox(frame, state="readonly", value=db.fetchEmails())
+        combo.grid(row=0, column=1)
 
         saveButton1 = tk.Button(frame, text = "Dodaj...", command = openNewAccount)
         saveButton1.grid(row=0, column=2)
@@ -33,4 +29,4 @@ class Settings:
         root.mainloop()
 
 def openNewAccount():
-    newAccount.NewAccount()
+    addAccount.NewAccount()

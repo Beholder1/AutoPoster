@@ -14,6 +14,11 @@ class Database:
         rows = self.cur.fetchall()
         return rows
 
+    def fetchEmails(self):
+        self.cur.execute("SELECT email FROM parts")
+        emails = self.cur.fetchall()
+        return emails
+
     def insert(self, email, password):
         self.cur.execute("INSERT INTO parts VALUES (NULL, ?, ?)", (email, password))
         self.conn.commit()
@@ -32,6 +37,16 @@ class Database:
 
     def getL(self, id):
         self.cur.execute("SELECT localization FROM localizations WHERE id = ?", (id,))
+        data = self.cur.fetchone()
+        return data[0]
+
+    def fetchL(self):
+        self.cur.execute("SELECT localization FROM localizations")
+        emails = self.cur.fetchall()
+        return emails
+
+    def getNumberL(self):
+        self.cur.execute("SELECT COUNT(*) FROM localizations")
         data = self.cur.fetchone()
         return data[0]
 

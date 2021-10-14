@@ -45,7 +45,7 @@ class MainScript:
         titles[1].send_keys(file.readline())
 
         # Lokalizacja
-        titles[3].send_keys(Keys.BACKSPACE * 10 + db.getL(2))
+        titles[3].send_keys(Keys.BACKSPACE * 10 + db.getL(random.randint(1,db.getNumberL())))
         titles[3].click()
         time.sleep(1)
         titles[3].send_keys(Keys.ARROW_DOWN + Keys.ENTER)
