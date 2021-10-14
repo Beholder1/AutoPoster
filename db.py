@@ -50,6 +50,10 @@ class Database:
         data = self.cur.fetchone()
         return data[0]
 
+    def deleteL(self, localization):
+        self.cur.execute("DELETE FROM localizations WHERE localization = ?", (localization,))
+        self.conn.commit()
+
     def __del__(self):
         self.conn.close()
 

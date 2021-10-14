@@ -6,6 +6,7 @@ import settings
 from product import addProduct
 from localization import addLocation
 from localization import editLocation
+from localization import deleteLocation
 
 from db import Database
 db = Database("store.db")
@@ -23,6 +24,8 @@ def openAddLocation():
     addLocation.AddLocation()
 def openEditLocation():
     editLocation.EditLocation()
+def openDeleteLocation():
+    deleteLocation.DeleteLocation()
 def openScript():
     MainScript()
 
@@ -48,7 +51,7 @@ localizationMenu = tk.Menu(myMenu, tearoff="off")
 myMenu.add_cascade(label="Lokalizacja", menu=localizationMenu)
 localizationMenu.add_command(label="Dodaj", command=openAddLocation)
 localizationMenu.add_command(label="Edytuj", command=openEditLocation)
-localizationMenu.add_command(label="Usuń", command=openAddLocation)
+localizationMenu.add_command(label="Usuń", command=openDeleteLocation)
 
 runButton = tk.Button(root, text = "Uruchom", command = openScript)
 runButton.pack()
