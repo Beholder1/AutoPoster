@@ -2,6 +2,11 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 import time
+import random
+
+from db import Database
+
+db = Database("store.db")
 
 class MainScript:
     def __init__(self):
@@ -40,7 +45,7 @@ class MainScript:
         titles[1].send_keys(file.readline())
 
         # Lokalizacja
-        titles[3].send_keys(Keys.BACKSPACE * 10 + file.readline())
+        titles[3].send_keys(Keys.BACKSPACE * 10 + db.getL(2))
         titles[3].click()
         time.sleep(1)
         titles[3].send_keys(Keys.ARROW_DOWN + Keys.ENTER)

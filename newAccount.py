@@ -22,7 +22,7 @@ class NewAccount:
         password = tk.Entry(frame, textvariable=tk.StringVar())
         password.grid(row=1, column=1)
 
-        button = tk.Button(frame, text="Zapisz", command=db.insert(email.get(), password.get()))
+        button = tk.Button(frame, text="Zapisz", command=lambda: db.insert(email.get(), password.get()))
         button.grid(row=3, column=1)
 
         root.mainloop()

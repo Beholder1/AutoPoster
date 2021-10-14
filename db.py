@@ -5,6 +5,8 @@ class Database:
         self.conn = sqlite3.connect(db)
         self.cur = self.conn.cursor()
         self.cur.execute("CREATE TABLE IF NOT EXISTS parts (id INTEGER PRIMARY KEY, email text, password text)")
+        self.cur.execute("CREATE TABLE IF NOT EXISTS product (id INTEGER PRIMARY KEY, title text, price text, description text)")
+        self.cur.execute("CREATE TABLE IF NOT EXISTS localizations (id INTEGER PRIMARY KEY, localization text)")
         self.conn.commit()
 
     def fetch(self):
@@ -17,12 +19,21 @@ class Database:
         self.conn.commit()
 
     def remove(self, id):
-        self.cur.execute("DELETE FROM parts WHERE id = ?", (id))
+        self.cur.execute("DELETE FROM parts WHERE id = ?", (id,))
         self.conn.commit()
 
     def update(self, id, email, password):
         self.cur.execute("UPDATE parts SET email = ?, password = ? WHERE id = ?", (email, password, id))
         self.conn.commit()
+
+    def insertL(self, localization):
+        self.cur.execute("INSERT INTO localizations VALUES (NULL, ?)", (localization,))
+        self.conn.commit()
+
+    def getL(self, id):
+        self.cur.execute("SELECT localization FROM localizations WHERE id = ?", (id,))
+        data = self.cur.fetchone()
+        return data[0]
 
     def __del__(self):
         self.conn.close()
