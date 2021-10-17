@@ -3,6 +3,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 import time
 import random
+import os
 
 from db import Database
 
@@ -71,9 +72,8 @@ class MainScript:
         menu[1].click()
         time.sleep(1)
 
-
-        # Zdjęcia WIP
-        #photos = driver.find_element_by_css_selector(".hu5pjgll.lzf7d6o1.sp_PWqJlQU-9_Q.sx_0face5")
-        # photos.send_keys(os.getcwd()+"\i1.png")
+        # Zdjęcia
+        photos = driver.find_elements_by_css_selector(".mkhogb32")
+        photos[3].send_keys(os.getcwd()+"\i1.png")
 
         file.close()
