@@ -58,6 +58,15 @@ class Database:
         self.cur.execute("DELETE FROM localizations WHERE localization = ?", (localization,))
         self.conn.commit()
 
+    def fetchP(self):
+        self.cur.execute("SELECT title FROM product")
+        emails = self.cur.fetchall()
+        return emails
+
+    def deleteP(self, localization):
+        self.cur.execute("DELETE FROM product WHERE title = ?", (localization,))
+        self.conn.commit()
+
     def __del__(self):
         self.conn.close()
 
