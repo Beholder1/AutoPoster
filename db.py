@@ -7,6 +7,7 @@ class Database:
         self.cur.execute("CREATE TABLE IF NOT EXISTS parts (id INTEGER PRIMARY KEY, email text, password text)")
         self.cur.execute("CREATE TABLE IF NOT EXISTS product (id INTEGER PRIMARY KEY, title text, price text, description text)")
         self.cur.execute("CREATE TABLE IF NOT EXISTS localizations (id INTEGER PRIMARY KEY, localization text)")
+        self.cur.execute("CREATE TABLE IF NOT EXISTS photos (id INTEGER PRIMARY KEY, path text)")
         self.conn.commit()
 
     def fetch(self):
