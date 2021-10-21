@@ -5,9 +5,9 @@ class Database:
         self.conn = sqlite3.connect(db)
         self.cur = self.conn.cursor()
         self.cur.execute("CREATE TABLE IF NOT EXISTS parts (id INTEGER PRIMARY KEY, email text, password text)")
-        self.cur.execute("CREATE TABLE IF NOT EXISTS product (id INTEGER PRIMARY KEY, title text, price text, description text)")
+        self.cur.execute("CREATE TABLE IF NOT EXISTS product (id INTEGER PRIMARY KEY, title text, price text, description text, category INTEGER, FOREIGN KEY(category) REFERENCES categories(id))")
         self.cur.execute("CREATE TABLE IF NOT EXISTS localizations (id INTEGER PRIMARY KEY, localization text)")
-        self.cur.execute("CREATE TABLE IF NOT EXISTS photos (id INTEGER PRIMARY KEY, path text)")
+        self.cur.execute("CREATE TABLE IF NOT EXISTS photos (id INTEGER PRIMARY KEY, path text, product INTEGER, FOREIGN KEY(product) REFERENCES products(id))")
         self.conn.commit()
 
     def fetch(self):
@@ -59,6 +59,10 @@ class Database:
         self.cur.execute("DELETE FROM localizations WHERE localization = ?", (localization,))
         self.conn.commit()
 
+    def insertP(self, title, price, description, category):
+        self.cur.execute("INSERT INTO product VALUES (NULL, ?, ?, ?, ?)", (title, price, description, category))
+        self.conn.commit()
+
     def fetchP(self):
         self.cur.execute("SELECT title FROM product")
         emails = self.cur.fetchall()
@@ -67,6 +71,16 @@ class Database:
     def deleteP(self, localization):
         self.cur.execute("DELETE FROM product WHERE title = ?", (localization,))
         self.conn.commit()
+
+    def fetchC(self):
+        self.cur.execute("SELECT category FROM categories")
+        categories = self.cur.fetchall()
+        return categories
+
+    def getC(self, category):
+        self.cur.execute("SELECT id FROM categories WHERE category = ?", (category,))
+        id = self.cur.fetchall()
+        return id[0][0]
 
     def __del__(self):
         self.conn.close()

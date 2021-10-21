@@ -10,7 +10,7 @@ from db import Database
 db = Database("store.db")
 
 class MainScript:
-    def __init__(self):
+    def __init__(self, hide):
         PATH = "C:\Program Files (x86)\chromedriver.exe"
         option = Options()
         option.add_argument("--disable-infobars")
@@ -85,8 +85,9 @@ class MainScript:
         titles[3].send_keys(Keys.ARROW_DOWN + Keys.ENTER)
 
         # Ukryj przed znajomymi
-        hideBeforeFriends = driver.find_elements_by_css_selector(".oajrlxb2.rq0escxv.f1sip0of.hidtqoto.nhd2j8a9.datstx6m.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.b5wmifdl.lzcic4wl.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.pmk7jnqg.j9ispegn.kr520xx4.k4urcfbm")
-        hideBeforeFriends[1].click()
+        if hide != 0:
+            hideBeforeFriends = driver.find_elements_by_css_selector(".oajrlxb2.rq0escxv.f1sip0of.hidtqoto.nhd2j8a9.datstx6m.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.b5wmifdl.lzcic4wl.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.pmk7jnqg.j9ispegn.kr520xx4.k4urcfbm")
+            hideBeforeFriends[1].click()
 
         # Dalej
         next = driver.find_elements_by_css_selector(".oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.pq6dq46d.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.n00je7tq.arfg74bv.qs9ysxi8.k77z8yql.l9j0dhe7.abiwlrkh.p8dawk7l.cbu4d94t.taijpn5t.k4urcfbm")
