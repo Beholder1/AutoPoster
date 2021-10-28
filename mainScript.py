@@ -10,7 +10,7 @@ from db import Database
 db = Database("store.db")
 
 class MainScript:
-    def __init__(self, hide):
+    def __init__(self, hide, title, email1):
         PATH = "C:\Program Files (x86)\chromedriver.exe"
         option = Options()
         option.add_argument("--disable-infobars")
@@ -25,16 +25,20 @@ class MainScript:
         # Logowanie
         driver.get("https://facebook.com")
         email = driver.find_element_by_id("email")
-        email.send_keys("kamil.limanowa@gmail.com")
+        email.send_keys(email1)
         password = driver.find_element_by_id("pass")
-        password.send_keys("h5k11s00")
+        password.send_keys(db.getA(email1))
         password.send_keys(Keys.ENTER)
         time.sleep(6)
 
         # Przejście do postowania ogłoszenia
         driver.get("https://www.facebook.com/marketplace/create/item")
-        file = open("test.txt")
         time.sleep(2)
+
+        notifications = driver.find_elements_by_css_selector(
+            ".oajrlxb2.tdjehn4e.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.j83agx80.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.s45kfl79.emlxlaya.bkmhp75w.spb7xbtv.l9j0dhe7.abiwlrkh.p8dawk7l.bp9cbjyn.rt8b4zig.n8ej3o3l.agehan2d.sk4xxmp2.taijpn5t.qypqp5cg.q676j6op")
+        notifications[2].click()
+        time.sleep(1)
 
         # Zdjęcia
         photos = driver.find_elements_by_css_selector(".mkhogb32")
@@ -44,10 +48,11 @@ class MainScript:
         titles = driver.find_elements_by_css_selector(".oajrlxb2.rq0escxv.f1sip0of.hidtqoto.e70eycc3.lzcic4wl.g5ia77u1.gcieejh5.bn081pho.humdl8nn.izx4hr6d.oo9gr5id.qc3s4z1d.knj5qynh.fo6rh5oj.osnr6wyh.hv4rvrfc.dati1w0a.p0x8y401.k4urcfbm.iu8raji3.nfbje2wv")
 
         # Tytuł
-        titles[0].send_keys(file.readline())
+        titles[0].send_keys(title)
+        product = db.getP(title)
 
         # Cena
-        titles[1].send_keys(file.readline())
+        titles[1].send_keys(product[2])
 
         # Wybranie rozwijanych menu
         menu = driver.find_elements_by_css_selector(
@@ -70,7 +75,7 @@ class MainScript:
         # Opis
         desc = driver.find_element_by_css_selector(
             ".oajrlxb2.rq0escxv.f1sip0of.hidtqoto.lzcic4wl.g5ia77u1.gcieejh5.bn081pho.humdl8nn.izx4hr6d.oo9gr5id.j83agx80.jagab5yi.knj5qynh.fo6rh5oj.oud54xpy.l9qdfxac.ni8dbmo4.stjgntxs.hv4rvrfc.dati1w0a.ieid39z1.k4urcfbm")
-        desc.send_keys(file.readline())
+        desc.send_keys(product[3])
 
         # Dostępność
         menu[2].click()
@@ -92,4 +97,3 @@ class MainScript:
         # Dalej
         next = driver.find_elements_by_css_selector(".oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.pq6dq46d.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.n00je7tq.arfg74bv.qs9ysxi8.k77z8yql.l9j0dhe7.abiwlrkh.p8dawk7l.cbu4d94t.taijpn5t.k4urcfbm")
         next[2].click()
-        file.close()

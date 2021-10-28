@@ -5,7 +5,7 @@ class Database:
         self.conn = sqlite3.connect(db)
         self.cur = self.conn.cursor()
         self.cur.execute("CREATE TABLE IF NOT EXISTS parts (id INTEGER PRIMARY KEY, email text, password text)")
-        self.cur.execute("CREATE TABLE IF NOT EXISTS product (id INTEGER PRIMARY KEY, title text, price text, description text, category INTEGER, FOREIGN KEY(category) REFERENCES categories(id))")
+        self.cur.execute("CREATE TABLE IF NOT EXISTS product (id INTEGER PRIMARY KEY, title text, price INTEGER, description text, category INTEGER, FOREIGN KEY(category) REFERENCES categories(id))")
         self.cur.execute("CREATE TABLE IF NOT EXISTS localizations (id INTEGER PRIMARY KEY, localization text)")
         self.cur.execute("CREATE TABLE IF NOT EXISTS photos (id INTEGER PRIMARY KEY, path text, product INTEGER, FOREIGN KEY(product) REFERENCES products(id))")
         self.conn.commit()
@@ -19,6 +19,11 @@ class Database:
         self.cur.execute("SELECT email FROM parts")
         emails = self.cur.fetchall()
         return emails
+
+    def getA(self, email):
+        self.cur.execute("SELECT password FROM parts WHERE email = ?", (email,))
+        data = self.cur.fetchone()
+        return data[0]
 
     def insert(self, email, password):
         self.cur.execute("INSERT INTO parts VALUES (NULL, ?, ?)", (email, password))
@@ -67,6 +72,11 @@ class Database:
         self.cur.execute("SELECT title FROM product")
         emails = self.cur.fetchall()
         return emails
+
+    def getP(self, title):
+        self.cur.execute("SELECT * FROM product WHERE title = ?", (title,))
+        data = self.cur.fetchone()
+        return data
 
     def deleteP(self, localization):
         self.cur.execute("DELETE FROM product WHERE title = ?", (localization,))

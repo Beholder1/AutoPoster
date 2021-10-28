@@ -1,8 +1,10 @@
 import tkinter as tk
+from tkinter import ttk
 
 from mainScript import MainScript
 
 from product import addProduct
+from product import editProduct
 from product import deleteProduct
 from account import addAccount
 from account import editAccount
@@ -14,7 +16,6 @@ from localization import deleteLocation
 from db import Database
 db = Database("store.db")
 
-
 root = tk.Tk()
 
 root.title("Tworzenie ogłoszeń")
@@ -23,6 +24,8 @@ def openAddProduct():
     addProduct.AddProduct()
 def openDeleteProduct():
     deleteProduct.DeleteProduct()
+def openEditProduct():
+    editProduct.EditProduct()
 
 def openAddAccount():
     addAccount.AddAccount()
@@ -38,8 +41,8 @@ def openEditLocation():
 def openDeleteLocation():
     deleteLocation.DeleteLocation()
 
-def openScript(hide):
-    MainScript(hide)
+def openScript(hide, title, email):
+    MainScript(hide, title, email)
 
 canvas = tk.Canvas(root, height = 700, width = 700)
 canvas.pack()
@@ -56,7 +59,7 @@ settingsMenu.add_command(label="Usuń", command=openDeleteAccount)
 productsMenu = tk.Menu(myMenu, tearoff="off")
 myMenu.add_cascade(label="Produkt", menu=productsMenu)
 productsMenu.add_command(label="Dodaj", command=openAddProduct)
-productsMenu.add_command(label="Edytuj", command=openAddProduct)
+productsMenu.add_command(label="Edytuj", command=openEditProduct)
 productsMenu.add_command(label="Usuń", command=openDeleteProduct)
 
 localizationMenu = tk.Menu(myMenu, tearoff="off")
@@ -71,7 +74,16 @@ tk.Label(frame, text="Ukryj przed znajomymi: ").grid(row=0, column=0)
 var1 = tk.IntVar()
 tk.Checkbutton(frame, variable=var1).grid(row=0, column=1)
 
-runButton = tk.Button(root, text="Uruchom", command=lambda: openScript(var1.get()))
+tk.Label(frame, text="Produkt: ").grid(row=1, column=0)
+combo = ttk.Combobox(frame, state="readonly", value=db.fetchP())
+combo.grid(row=1, column=1)
+
+tk.Label(frame, text="Konto: ").grid(row=2, column=0)
+combo1 = ttk.Combobox(frame, state="readonly", value=db.fetchEmails())
+combo1.current(0)
+combo1.grid(row=2, column=1)
+
+runButton = tk.Button(root, text="Uruchom", command=lambda: openScript(var1.get(), combo.get(), combo1.get()))
 runButton.pack()
 
 root.mainloop()

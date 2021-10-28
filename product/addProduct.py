@@ -30,7 +30,11 @@ class AddProduct:
 
         tk.Label(frame, text="Kategoria: ").grid(row=3, column=0)
 
-        combo = ttk.Combobox(frame, state="readonly", value=db.fetchC())
+        l =[]
+        for i in db.fetchC():
+            l.append(i[0])
+
+        combo = ttk.Combobox(frame, state="readonly", value=l)
         combo.grid(row=3, column=1)
 
         button = tk.Button(frame, text="Dodaj", command=lambda: db.insertP(title.get(), price.get(), desc.get(), db.getC(combo.get())))
