@@ -6,7 +6,7 @@ db = Database("store.db")
 class AddAccount:
     def __init__(self):
         root = tk.Tk()
-        canvas = tk.Canvas(root, height=75, width=150)
+        canvas = tk.Canvas(root, height=75, width=175)
         canvas.pack()
 
         frame = tk.Frame(root)

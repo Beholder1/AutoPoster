@@ -20,7 +20,7 @@ class AddProduct:
 
         tk.Label(frame, text="Cena: ").grid(row=1, column=0)
 
-        price = tk.Entry(frame, textvariable=tk.StringVar())
+        price = tk.Entry(frame, textvariable=tk.IntVar())
         price.grid(row=1, column=1)
 
         tk.Label(frame, text="Opis: ").grid(row=2, column=0)

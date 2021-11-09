@@ -10,7 +10,7 @@ from db import Database
 db = Database("store.db")
 
 class MainScript:
-    def __init__(self, hide, title, email1):
+    def __init__(self, hide, title, email1, iterrations):
         PATH = "C:\Program Files (x86)\chromedriver.exe"
         option = Options()
         option.add_argument("--disable-infobars")
@@ -37,12 +37,12 @@ class MainScript:
 
         notifications = driver.find_elements_by_css_selector(
             ".oajrlxb2.tdjehn4e.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.j83agx80.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.s45kfl79.emlxlaya.bkmhp75w.spb7xbtv.l9j0dhe7.abiwlrkh.p8dawk7l.bp9cbjyn.rt8b4zig.n8ej3o3l.agehan2d.sk4xxmp2.taijpn5t.qypqp5cg.q676j6op")
-        notifications[2].click()
+        #notifications[2].click()
         time.sleep(1)
 
         # Zdjęcia
         photos = driver.find_elements_by_css_selector(".mkhogb32")
-        photos[3].send_keys(os.getcwd() + "\i1.png")
+        photos[1].send_keys(os.getcwd() + "\i1.png")
 
         # Wybranie pól tekstowych
         titles = driver.find_elements_by_css_selector(".oajrlxb2.rq0escxv.f1sip0of.hidtqoto.e70eycc3.lzcic4wl.g5ia77u1.gcieejh5.bn081pho.humdl8nn.izx4hr6d.oo9gr5id.qc3s4z1d.knj5qynh.fo6rh5oj.osnr6wyh.hv4rvrfc.dati1w0a.p0x8y401.k4urcfbm.iu8raji3.nfbje2wv")

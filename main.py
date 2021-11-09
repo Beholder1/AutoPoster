@@ -41,10 +41,10 @@ def openEditLocation():
 def openDeleteLocation():
     deleteLocation.DeleteLocation()
 
-def openScript(hide, title, email):
-    MainScript(hide, title, email)
+def openScript(hide, title, email, iterrations):
+    MainScript(hide, title, email, iterrations)
 
-canvas = tk.Canvas(root, height = 700, width = 700)
+canvas = tk.Canvas(root, height = 500, width = 500)
 canvas.pack()
 
 myMenu = tk.Menu(root)
@@ -83,7 +83,11 @@ combo1 = ttk.Combobox(frame, state="readonly", value=db.fetchEmails())
 combo1.current(0)
 combo1.grid(row=2, column=1)
 
-runButton = tk.Button(root, text="Uruchom", command=lambda: openScript(var1.get(), combo.get(), combo1.get()))
+tk.Label(frame, text="Ile ogłoszeń: ").grid(row=3, column=0)
+iterrations = tk.Entry(frame, textvariable=tk.IntVar(value=1))
+iterrations.grid(row=3, column=1)
+
+runButton = tk.Button(root, text="Uruchom", command=lambda: openScript(var1.get(), combo.get(), combo1.get(), iterrations.get()))
 runButton.pack()
 
 root.mainloop()
