@@ -44,29 +44,24 @@ def openDeleteLocation():
 def openScript(hide, title, email, iterrations):
     MainScript(hide, title, email, iterrations)
 
+def menuPart(name, commandAdd, commandEdit, commandDelete):
+    settingsMenu = tk.Menu(myMenu, tearoff="off")
+    myMenu.add_cascade(label=name, menu=settingsMenu)
+    settingsMenu.add_command(label="Dodaj", command=commandAdd)
+    settingsMenu.add_command(label="Edytuj", command=commandEdit)
+    settingsMenu.add_command(label="Usuń", command=commandDelete)
+
 canvas = tk.Canvas(root, height = 500, width = 500)
 canvas.pack()
 
 myMenu = tk.Menu(root)
 root.config(menu=myMenu)
 
-settingsMenu = tk.Menu(myMenu, tearoff="off")
-myMenu.add_cascade(label="Konto", menu=settingsMenu)
-settingsMenu.add_command(label="Dodaj", command=openAddAccount)
-settingsMenu.add_command(label="Edytuj", command=openEditAccount)
-settingsMenu.add_command(label="Usuń", command=openDeleteAccount)
+menuPart("Konto", openAddAccount, openEditAccount, openDeleteAccount)
 
-productsMenu = tk.Menu(myMenu, tearoff="off")
-myMenu.add_cascade(label="Produkt", menu=productsMenu)
-productsMenu.add_command(label="Dodaj", command=openAddProduct)
-productsMenu.add_command(label="Edytuj", command=openEditProduct)
-productsMenu.add_command(label="Usuń", command=openDeleteProduct)
+menuPart("Produkt", openAddProduct, openEditProduct, openDeleteProduct)
 
-localizationMenu = tk.Menu(myMenu, tearoff="off")
-myMenu.add_cascade(label="Lokalizacja", menu=localizationMenu)
-localizationMenu.add_command(label="Dodaj", command=openAddLocation)
-localizationMenu.add_command(label="Edytuj", command=openEditLocation)
-localizationMenu.add_command(label="Usuń", command=openDeleteLocation)
+menuPart("Lokalizacja", openAddLocation, openEditLocation, openDeleteLocation)
 
 frame = tk.Frame(root)
 frame.place(relwidth=1, relheight=1)
@@ -76,6 +71,7 @@ tk.Checkbutton(frame, variable=var1).grid(row=0, column=1)
 
 tk.Label(frame, text="Produkt: ").grid(row=1, column=0)
 combo = ttk.Combobox(frame, state="readonly", value=db.fetchP())
+combo.current(0)
 combo.grid(row=1, column=1)
 
 tk.Label(frame, text="Konto: ").grid(row=2, column=0)
