@@ -44,6 +44,7 @@ def openDeleteLocation():
 def openScript(hide, title, email, iterrations):
     MainScript(hide, title, email, iterrations)
 
+
 def menuPart(name, commandAdd, commandEdit, commandDelete):
     settingsMenu = tk.Menu(myMenu, tearoff="off")
     myMenu.add_cascade(label=name, menu=settingsMenu)
