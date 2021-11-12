@@ -5,7 +5,7 @@ class Database:
         self.conn = sqlite3.connect(db)
         self.cur = self.conn.cursor()
         self.cur.execute("CREATE TABLE IF NOT EXISTS parts (id INTEGER PRIMARY KEY, email text, password text)")
-        self.cur.execute("CREATE TABLE IF NOT EXISTS product (id INTEGER PRIMARY KEY, title text, price INTEGER, description text, category INTEGER, FOREIGN KEY(category) REFERENCES categories(id))")
+        self.cur.execute("CREATE TABLE IF NOT EXISTS product (id INTEGER PRIMARY KEY, productName text, title text, price INTEGER, description text, category INTEGER, FOREIGN KEY(category) REFERENCES categories(id))")
         self.cur.execute("CREATE TABLE IF NOT EXISTS localizations (id INTEGER PRIMARY KEY, localization text)")
         self.cur.execute("CREATE TABLE IF NOT EXISTS photos (id INTEGER PRIMARY KEY, path text, product INTEGER, FOREIGN KEY(product) REFERENCES products(id))")
         self.conn.commit()
@@ -64,22 +64,22 @@ class Database:
         self.cur.execute("DELETE FROM localizations WHERE localization = ?", (localization,))
         self.conn.commit()
 
-    def insertP(self, title, price, description, category):
-        self.cur.execute("INSERT INTO product VALUES (NULL, ?, ?, ?, ?)", (title, price, description, category))
+    def insertP(self, productName, title, price, description, category):
+        self.cur.execute("INSERT INTO product VALUES (NULL, ?, ?, ?, ?, ?)", (productName, title, price, description, category))
         self.conn.commit()
 
     def fetchP(self):
-        self.cur.execute("SELECT title FROM product")
+        self.cur.execute("SELECT productName FROM product")
         emails = self.cur.fetchall()
         return emails
 
-    def getP(self, title):
-        self.cur.execute("SELECT * FROM product WHERE title = ?", (title,))
+    def getP(self, productName):
+        self.cur.execute("SELECT * FROM product WHERE productName = ?", (productName,))
         data = self.cur.fetchone()
         return data
 
-    def deleteP(self, localization):
-        self.cur.execute("DELETE FROM product WHERE title = ?", (localization,))
+    def deleteP(self, productName):
+        self.cur.execute("DELETE FROM product WHERE productName = ?", (productName,))
         self.conn.commit()
 
     def fetchC(self):

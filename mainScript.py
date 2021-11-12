@@ -10,7 +10,7 @@ from db import Database
 db = Database("store.db")
 
 class MainScript:
-    def __init__(self, hide, title, email1, iterrations):
+    def __init__(self, hide, email1, products):
         PATH = "C:\Program Files (x86)\chromedriver.exe"
         option = Options()
         option.add_argument("--disable-infobars")
@@ -31,7 +31,8 @@ class MainScript:
         password.send_keys(Keys.ENTER)
         time.sleep(6)
 
-        for i in range(0, int(iterrations)):
+        for product1 in products:
+
             # Przejście do postowania ogłoszenia
             driver.get("https://www.facebook.com/marketplace/create/item")
             time.sleep(2)
@@ -49,8 +50,8 @@ class MainScript:
             titles = driver.find_elements_by_css_selector(".oajrlxb2.rq0escxv.f1sip0of.hidtqoto.e70eycc3.lzcic4wl.g5ia77u1.gcieejh5.bn081pho.humdl8nn.izx4hr6d.oo9gr5id.qc3s4z1d.knj5qynh.fo6rh5oj.osnr6wyh.hv4rvrfc.dati1w0a.p0x8y401.k4urcfbm.iu8raji3.nfbje2wv")
 
             # Tytuł
-            titles[0].send_keys(title)
-            product = db.getP(title)
+            titles[0].send_keys(product1)
+            product = db.getP(product1)
 
             # Cena
             titles[1].send_keys(product[2])

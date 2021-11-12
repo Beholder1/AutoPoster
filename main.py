@@ -12,7 +12,7 @@ from account import deleteAccount
 from localization import addLocation
 from localization import editLocation
 from localization import deleteLocation
-
+import chooseProducts
 from db import Database
 db = Database("store.db")
 
@@ -41,9 +41,8 @@ def openEditLocation():
 def openDeleteLocation():
     deleteLocation.DeleteLocation()
 
-def openScript(hide, title, email, iterrations):
-    MainScript(hide, title, email, iterrations)
-
+def openChooseProducts(iterrations, hide, email):
+    chooseProducts.ChooseProducts(iterrations, hide, email)
 
 def menuPart(name, commandAdd, commandEdit, commandDelete):
     settingsMenu = tk.Menu(myMenu, tearoff="off")
@@ -70,21 +69,16 @@ tk.Label(frame, text="Ukryj przed znajomymi: ").grid(row=0, column=0)
 var1 = tk.IntVar()
 tk.Checkbutton(frame, variable=var1).grid(row=0, column=1)
 
-tk.Label(frame, text="Produkt: ").grid(row=1, column=0)
-combo = ttk.Combobox(frame, state="readonly", value=db.fetchP())
-combo.current(0)
-combo.grid(row=1, column=1)
-
 tk.Label(frame, text="Konto: ").grid(row=2, column=0)
 combo1 = ttk.Combobox(frame, state="readonly", value=db.fetchEmails())
-combo1.current(0)
+#combo1.current(0)
 combo1.grid(row=2, column=1)
 
 tk.Label(frame, text="Ile ogłoszeń: ").grid(row=3, column=0)
 iterrations = tk.Entry(frame, textvariable=tk.IntVar(value=1))
 iterrations.grid(row=3, column=1)
 
-runButton = tk.Button(root, text="Uruchom", command=lambda: openScript(var1.get(), combo.get(), combo1.get(), iterrations.get()))
+runButton = tk.Button(root, text="Uruchom", command=lambda: openChooseProducts(int(iterrations.get()), var1.get(), combo1.get()))
 runButton.pack()
 
 root.mainloop()
