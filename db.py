@@ -92,6 +92,10 @@ class Database:
         id = self.cur.fetchall()
         return id[0][0]
 
+    def insertI(self, path, product):
+        self.cur.execute("INSERT INTO photos VALUES (NULL, ?, ?)", (path, product,))
+        self.conn.commit()
+
     def __del__(self):
         self.conn.close()
 

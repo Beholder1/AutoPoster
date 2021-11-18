@@ -7,16 +7,23 @@ db = Database("store.db")
 
 class AddProduct:
     def __init__(self):
+        self.imageNames=[]
         def addImage(frame, button):
             i=4
-            imageNames=filedialog.askopenfilenames(initialdir="/", title="Wybierz zdjęcia", filetypes=[("Obrazy",".bmp .tif .tiff .png .gif .jpg .jpeg .jfif .pjpeg .pjp")])
-            for name in imageNames:
+            self.imageNames=filedialog.askopenfilenames(initialdir="/", title="Wybierz zdjęcia", filetypes=[("Obrazy",".bmp .tif .tiff .png .gif .jpg .jpeg .jfif .pjpeg .pjp")])
+            for name in self.imageNames:
                 button.grid(row=i+1, column=1)
                 label = tk.Label(frame, text=name)
                 label.grid(row=i, column=2)
                 deleteButton = tk.Button(frame, text="Usuń")
                 deleteButton.grid(row=i, column=3)
                 i+=1
+
+        def addProduct(product, title, price, desc, category):
+            db.insertP(product, title, price, desc, category)
+            p = db.getP(product)[0]
+            for name in self.imageNames:
+                db.insertI(name, p)
 
         root = tk.Tk()
         canvas = tk.Canvas(root, height=700, width=700)
@@ -54,7 +61,7 @@ class AddProduct:
         images = tk.Button(frame, text="Wybierz", command=lambda: addImage(frame, button))
         images.grid(row=5, column=1)
 
-        button = tk.Button(frame, text="Dodaj", command=lambda: db.insertP(product.get(), title.get(), price.get(), desc.get(), db.getC(combo.get())))
+        button = tk.Button(frame, text="Dodaj", command=lambda: addProduct(product.get(), title.get(), price.get(), desc.get(), db.getC(combo.get())))
         button.grid(row=6, column=1)
 
 

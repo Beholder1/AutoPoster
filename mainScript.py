@@ -30,7 +30,6 @@ class MainScript:
         password.send_keys(db.getA(email1))
         password.send_keys(Keys.ENTER)
         time.sleep(6)
-
         for product1 in products:
 
             # Przejście do postowania ogłoszenia
@@ -54,7 +53,7 @@ class MainScript:
             product = db.getP(product1)
 
             # Cena
-            titles[1].send_keys(product[2])
+            titles[1].send_keys(product[3])
 
             # Wybranie rozwijanych menu
             menu = driver.find_elements_by_css_selector(
@@ -77,7 +76,7 @@ class MainScript:
             # Opis
             desc = driver.find_element_by_css_selector(
                 ".oajrlxb2.rq0escxv.f1sip0of.hidtqoto.lzcic4wl.g5ia77u1.gcieejh5.bn081pho.humdl8nn.izx4hr6d.oo9gr5id.j83agx80.jagab5yi.knj5qynh.fo6rh5oj.oud54xpy.l9qdfxac.ni8dbmo4.stjgntxs.hv4rvrfc.dati1w0a.ieid39z1.k4urcfbm")
-            desc.send_keys(product[3])
+            desc.send_keys(product[4])
 
             # Dostępność
             menu[2].click()
@@ -104,3 +103,5 @@ class MainScript:
             time.sleep(2)
             post = driver.find_elements_by_css_selector(".oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.pq6dq46d.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.n00je7tq.arfg74bv.qs9ysxi8.k77z8yql.l9j0dhe7.abiwlrkh.p8dawk7l.cbu4d94t.taijpn5t.k4urcfbm")
             post[-1].click()
+
+            time.sleep(3)

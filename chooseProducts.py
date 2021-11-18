@@ -29,12 +29,13 @@ class ChooseProducts:
             combo.grid(row=i-1, column=1)
             combos.append(combo)
             i+=1
+        def productsGet():
+            products=[]
+            for combo in combos:
+                products.append(combo.get())
+            return products
 
-        products=[]
-        for combo in combos:
-            products.append(combo.get())
-
-        button = tk.Button(frame, text="Uruchom", command=lambda: openScript(hide, email, products))
+        button = tk.Button(frame, text="Uruchom", command=lambda: openScript(hide, email, productsGet()))
         button.grid(row=numberOfProducts, column=1)
 
         root.mainloop()
