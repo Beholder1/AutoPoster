@@ -9,7 +9,7 @@ class DeleteProduct:
         def updateCombo(combo):
             db.deleteP(combo.get())
             products=db.fetchP()
-            combo.config(value=products)
+            combo.config(value=products[0])
             combo.set(products)
 
         root = tk.Tk()

@@ -9,7 +9,7 @@ class DeleteAccount:
         def updateCombo(combo):
             db.deleteA(combo.get())
             emails=db.fetchEmails()
-            combo.config(value=emails)
+            combo.config(value=emails[0])
             combo.set(emails)
 
         root = tk.Tk()

@@ -9,7 +9,7 @@ class DeleteLocation:
         def updateCombo(combo):
             db.deleteL(combo.get())
             locations=db.fetchL()
-            combo.config(value=locations)
+            combo.config(value=locations[0])
             combo.set(locations)
 
         root = tk.Tk()
