@@ -78,6 +78,11 @@ class Database:
         data = self.cur.fetchone()
         return data
 
+    def getPC(self, productName):
+        self.cur.execute("SELECT category FROM product WHERE productName = ?", (productName,))
+        data = self.cur.fetchone()
+        return data[0]
+
     def deleteP(self, productName):
         self.cur.execute("DELETE FROM product WHERE productName = ?", (productName,))
         self.conn.commit()

@@ -3,7 +3,6 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 import time
 import random
-import os
 
 from db import Database
 
@@ -40,69 +39,74 @@ class MainScript:
             images = db.fetchI(product1)
             photos = driver.find_element_by_xpath("//input[@accept='image/*,image/heif,image/heic']")
             paths=""
+            counter=0
             for image in images:
                 paths = paths+image[0]+"\n"
+                if counter==0:
+                    counter=31
+                elif counter<36:
+                    counter+=5
+                else:
+                    counter+=2
             paths=paths[:len(paths)-1]
-            print(paths)
             photos.send_keys(paths)
             time.sleep(2)
 
-
-            # Wybranie pól tekstowych
-            titles = driver.find_elements_by_css_selector(".oajrlxb2.rq0escxv.f1sip0of.hidtqoto.e70eycc3.lzcic4wl.g5ia77u1.gcieejh5.bn081pho.humdl8nn.izx4hr6d.oo9gr5id.qc3s4z1d.knj5qynh.fo6rh5oj.osnr6wyh.hv4rvrfc.dati1w0a.p0x8y401.k4urcfbm.iu8raji3.nfbje2wv")
-
             # Tytuł
-            titles[0].send_keys(product1)
+            title = driver.find_element_by_xpath("//label[@aria-label='Tytuł']")
+            title.send_keys(product1)
             product = db.getP(product1)
 
             # Cena
-            titles[1].send_keys(product[3])
+            price = driver.find_element_by_xpath("//label[@aria-label='Cena']")
+            price.send_keys(product[3])
 
             # Kategoria WIP
             kategoria = driver.find_element_by_xpath("//label[@aria-label='Kategoria']")
             kategoria.click()
-            time.sleep(1)
-            tools = driver.find_elements_by_css_selector(".oajrlxb2.gs1a9yip.g5ia77u1.mtkw9kbi.tlpljxtp.qensuy8j.ppp5ayq2.goun2846.ccm00jje.s44p3ltw.mk2mc5f4.rt8b4zig.n8ej3o3l.agehan2d.sk4xxmp2.rq0escxv.nhd2j8a9.a8c37x1j.mg4g778l.btwxx1t3.pfnyh3mw.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.tgvbjcpo.hpfvmrgz.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.l9j0dhe7.i1ao9s8h.esuyzwwr.f1sip0of.du4w35lb.lzcic4wl.ue3kfks5.pw54ja7n.uo3d90p7.l82x9zwi.abiwlrkh.p8dawk7l")
-            tools[10].click()
+            time.sleep(2)
+            tools = driver.find_elements_by_xpath("//div[@role='button']")
+            print(product)
+            tools[counter+int(product[5])-1].click()
+            time.sleep(2)
 
             # Stan WIP
             stan = driver.find_element_by_xpath("//label[@aria-label='Stan']")
             stan.click()
             time.sleep(1)
-            test = driver.find_element_by_css_selector(
-                ".oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.j83agx80.p7hjln8o.kvgmc6g5.opuu4ng7.oygrvhab.kj2yoqh6.pybr56ya.dflh9lhu.f10w8fjw.scb9dxdr.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.n00je7tq.arfg74bv.qs9ysxi8.k77z8yql.l9j0dhe7.abiwlrkh.p8dawk7l.bp9cbjyn.dwo3fsh8.btwxx1t3.pfnyh3mw.du4w35lb")
+            test = driver.find_element_by_xpath("//div[@role='menuitemradio']")
             test.click()
 
             # Opis
-            desc = driver.find_element_by_css_selector(
-                ".oajrlxb2.rq0escxv.f1sip0of.hidtqoto.lzcic4wl.g5ia77u1.gcieejh5.bn081pho.humdl8nn.izx4hr6d.oo9gr5id.j83agx80.jagab5yi.knj5qynh.fo6rh5oj.oud54xpy.l9qdfxac.ni8dbmo4.stjgntxs.hv4rvrfc.dati1w0a.ieid39z1.k4urcfbm")
+            desc = driver.find_element_by_xpath("//label[@aria-label='Opis']")
             desc.send_keys(product[4])
 
             # Dostępność
             accessibility = driver.find_element_by_xpath("//label[@aria-label='Dostępność']")
             accessibility.click()
             time.sleep(1)
-            avaible = driver.find_elements_by_css_selector(".oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.j83agx80.p7hjln8o.kvgmc6g5.opuu4ng7.oygrvhab.kj2yoqh6.pybr56ya.dflh9lhu.f10w8fjw.scb9dxdr.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.n00je7tq.arfg74bv.qs9ysxi8.k77z8yql.l9j0dhe7.abiwlrkh.p8dawk7l.bp9cbjyn.dwo3fsh8.btwxx1t3.pfnyh3mw.du4w35lb")
-            avaible[1].click()
+            avaible = driver.find_element_by_xpath("//div[@aria-checked='false']")
+            avaible.click()
 
             # Lokalizacja
-            titles[3].send_keys(Keys.BACKSPACE * 10 + db.getL(random.randint(1,db.getNumberL())))
-            titles[3].click()
+            location = driver.find_element_by_xpath("//label[@aria-label='Lokalizacja']")
+            location.send_keys(Keys.BACKSPACE * 10 + db.getL(random.randint(1,db.getNumberL())))
+            location.click()
             time.sleep(1)
-            titles[3].send_keys(Keys.ARROW_DOWN + Keys.ENTER)
+            location.send_keys(Keys.ARROW_DOWN + Keys.ENTER)
 
             # Ukryj przed znajomymi
             if hide != 0:
-                hideBeforeFriends = driver.find_elements_by_css_selector(".oajrlxb2.rq0escxv.f1sip0of.hidtqoto.nhd2j8a9.datstx6m.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.b5wmifdl.lzcic4wl.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.pmk7jnqg.j9ispegn.kr520xx4.k4urcfbm")
+                hideBeforeFriends = driver.find_elements_by_xpath("//input[@aria-label='Włączone']")
                 hideBeforeFriends[1].click()
 
             # Dalej
-            next = driver.find_elements_by_css_selector(".oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.pq6dq46d.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.n00je7tq.arfg74bv.qs9ysxi8.k77z8yql.l9j0dhe7.abiwlrkh.p8dawk7l.cbu4d94t.taijpn5t.k4urcfbm")
-            next[2].click()
+            next = driver.find_element_by_xpath("//div[@aria-label='Dalej']")
+            next.click()
 
             # Opublikuj
             time.sleep(2)
-            post = driver.find_elements_by_css_selector(".oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.pq6dq46d.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.n00je7tq.arfg74bv.qs9ysxi8.k77z8yql.l9j0dhe7.abiwlrkh.p8dawk7l.cbu4d94t.taijpn5t.k4urcfbm")
-            post[-1].click()
+            post = driver.find_element_by_xpath("//div[@aria-label='Opublikuj']")
+            post.click()
 
             time.sleep(3)
