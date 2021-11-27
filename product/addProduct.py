@@ -7,6 +7,7 @@ db = Database("store.db")
 
 class AddProduct:
     def __init__(self):
+        #DODAJ
         self.imageNames=[]
         def addImage(frame, button):
             i=4
@@ -26,11 +27,9 @@ class AddProduct:
                 db.insertI(name, p)
 
         root = tk.Tk()
-        canvas = tk.Canvas(root, height=700, width=700)
-        canvas.pack()
 
-        frame = tk.Frame(root)
-        frame.place(relwidth=1, relheight=1)
+        frame = tk.Frame(root, relief=tk.RIDGE, borderwidth=1)
+        frame.grid(row=0, column=0)
 
         tk.Label(frame, text="Produkt: ").grid(row=0, column=0)
         product = tk.Entry(frame, textvariable=tk.StringVar())
@@ -64,6 +63,38 @@ class AddProduct:
         button = tk.Button(frame, text="Dodaj", command=lambda: addProduct(product.get(), title.get(), price.get(), desc.get(), db.getC(combo.get())))
         button.grid(row=6, column=1)
 
+        #EDYTUJ
+        frame1 = tk.Frame(root, relief=tk.RIDGE, borderwidth=1)
+        frame1.grid(row=0, column=1)
 
+        tk.Label(frame1, text="Produkt: ").grid(row=0, column=0)
+
+        l = []
+        for i in db.fetchP():
+            l.append(i[0])
+
+        combo = ttk.Combobox(frame1, state="readonly", value=l)
+        combo.grid(row=0, column=1)
+
+        button = tk.Button(frame1, text="Edytuj")
+        button.grid(row=0, column=2)
+
+        #USUŃ
+        def updateCombo(combo):
+            db.deleteP(combo.get())
+            products=db.fetchP()
+            combo.config(value=products[0])
+            combo.set(products)
+
+        frame = tk.Frame(root, relief=tk.RIDGE, borderwidth=1)
+        frame.grid(row=1, column=0)
+
+        tk.Label(frame, text="Produkt: ").grid(row=0, column=0)
+
+        combo = ttk.Combobox(frame, state="readonly", value=db.fetchP())
+        combo.grid(row=0, column=1)
+
+        button = tk.Button(frame, text="Usuń", command=lambda: updateCombo(combo))
+        button.grid(row=0, column=2)
 
         root.mainloop()

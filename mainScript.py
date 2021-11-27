@@ -10,7 +10,7 @@ db = Database("store.db")
 
 class MainScript:
     def __init__(self, hide, email1, products):
-        PATH = "C:\Program Files (x86)\chromedriver.exe"
+        PATH = "driver/chromedriver.exe"
         option = Options()
         option.add_argument("--disable-infobars")
         option.add_argument("start-maximized")
@@ -66,7 +66,6 @@ class MainScript:
             kategoria.click()
             time.sleep(2)
             tools = driver.find_elements_by_xpath("//div[@role='button']")
-            print(product)
             tools[counter+int(product[5])-1].click()
             time.sleep(2)
 
