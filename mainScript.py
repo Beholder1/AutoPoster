@@ -50,7 +50,6 @@ class MainScript:
                     counter+=2
             paths=paths[:len(paths)-1]
             photos.send_keys(paths)
-            time.sleep(2)
 
             # Tytuł
             title = driver.find_element_by_xpath("//label[@aria-label='Tytuł']")
@@ -64,10 +63,9 @@ class MainScript:
             # Kategoria WIP
             kategoria = driver.find_element_by_xpath("//label[@aria-label='Kategoria']")
             kategoria.click()
-            time.sleep(2)
+            time.sleep(1)
             tools = driver.find_elements_by_xpath("//div[@role='button']")
             tools[counter+int(product[5])-1].click()
-            time.sleep(2)
 
             # Stan WIP
             stan = driver.find_element_by_xpath("//label[@aria-label='Stan']")
@@ -109,3 +107,4 @@ class MainScript:
             post.click()
 
             time.sleep(3)
+        driver.quit()

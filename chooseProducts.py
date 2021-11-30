@@ -8,6 +8,7 @@ db = Database("store.db")
 class ChooseProducts:
     def __init__(self, numberOfProducts, hide, email):
         def openScript(hide, email, products):
+            root.destroy()
             mainScript.MainScript(hide, email, products)
         root = tk.Tk()
         canvas = tk.Canvas(root, height=500, width=500)
