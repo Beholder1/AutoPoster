@@ -10,15 +10,14 @@ class Database:
         self.cur.execute("CREATE TABLE IF NOT EXISTS photos (id INTEGER PRIMARY KEY, path text, product INTEGER, FOREIGN KEY(product) REFERENCES products(id))")
         self.conn.commit()
 
-    def fetch(self):
-        self.cur.execute("SELECT * FROM parts")
-        rows = self.cur.fetchall()
-        return rows
+    def fetch(self, table, column):
+        self.cur.execute("SELECT " + column + " FROM " + table)
+        data = self.cur.fetchall()
+        return data
 
-    def fetchEmails(self):
-        self.cur.execute("SELECT email FROM parts")
-        emails = self.cur.fetchall()
-        return emails
+    def remove(self, table, column, criterion):
+        self.cur.execute("DELETE FROM " + table + " WHERE " + column + " = ?", (criterion,))
+        self.conn.commit()
 
     def getA(self, email):
         self.cur.execute("SELECT password FROM parts WHERE email = ?", (email,))
@@ -27,14 +26,6 @@ class Database:
 
     def insert(self, email, password):
         self.cur.execute("INSERT INTO parts VALUES (NULL, ?, ?)", (email, password))
-        self.conn.commit()
-
-    def remove(self, id):
-        self.cur.execute("DELETE FROM parts WHERE id = ?", (id,))
-        self.conn.commit()
-
-    def deleteA(self, email):
-        self.cur.execute("DELETE FROM parts WHERE email = ?", (email,))
         self.conn.commit()
 
     def update(self, id, email, password):
@@ -50,28 +41,14 @@ class Database:
         data = self.cur.fetchone()
         return data[0]
 
-    def fetchL(self):
-        self.cur.execute("SELECT localization FROM localizations")
-        emails = self.cur.fetchall()
-        return emails
-
     def getNumberL(self):
         self.cur.execute("SELECT COUNT(*) FROM localizations")
         data = self.cur.fetchone()
         return data[0]
 
-    def deleteL(self, localization):
-        self.cur.execute("DELETE FROM localizations WHERE localization = ?", (localization,))
-        self.conn.commit()
-
     def insertP(self, productName, title, price, description, category):
         self.cur.execute("INSERT INTO product VALUES (NULL, ?, ?, ?, ?, ?)", (productName, title, price, description, category))
         self.conn.commit()
-
-    def fetchP(self):
-        self.cur.execute("SELECT productName FROM product")
-        emails = self.cur.fetchall()
-        return emails
 
     def getP(self, productName):
         self.cur.execute("SELECT * FROM product WHERE productName = ?", (productName,))
@@ -82,15 +59,6 @@ class Database:
         self.cur.execute("SELECT category FROM product WHERE productName = ?", (productName,))
         data = self.cur.fetchone()
         return data[0]
-
-    def deleteP(self, productName):
-        self.cur.execute("DELETE FROM product WHERE productName = ?", (productName,))
-        self.conn.commit()
-
-    def fetchC(self):
-        self.cur.execute("SELECT category FROM categories")
-        categories = self.cur.fetchall()
-        return categories
 
     def getC(self, category):
         self.cur.execute("SELECT id FROM categories WHERE category = ?", (category,))
@@ -109,6 +77,3 @@ class Database:
 
     def __del__(self):
         self.conn.close()
-
-db = Database('store.db')
-

@@ -31,7 +31,7 @@ class AddAccount:
 
         tk.Label(frame1, text="Email: ").grid(row=0, column=0)
 
-        combo = ttk.Combobox(frame1, state="readonly", value=db.fetchEmails())
+        combo = ttk.Combobox(frame1, state="readonly", value=db.fetch())
         combo.grid(row=0, column=1)
 
         button = tk.Button(frame1, text="Edytuj")
@@ -40,7 +40,7 @@ class AddAccount:
         #USUŃ
         def updateCombo(combo):
             db.deleteA(combo.get())
-            emails=db.fetchEmails()
+            emails=db.fetch()
             combo.config(value=emails[0])
             combo.set(emails)
 
@@ -49,7 +49,7 @@ class AddAccount:
 
         tk.Label(frame2, text="Email: ").grid(row=0, column=0)
 
-        combo = ttk.Combobox(frame2, state="readonly", value=db.fetchEmails())
+        combo = ttk.Combobox(frame2, state="readonly", value=db.fetch())
         combo.grid(row=0, column=1)
 
         button = tk.Button(frame2, text="Usuń", command=lambda: updateCombo(combo))

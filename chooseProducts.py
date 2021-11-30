@@ -11,16 +11,14 @@ class ChooseProducts:
             root.destroy()
             mainScript.MainScript(hide, email, products)
         root = tk.Tk()
-        canvas = tk.Canvas(root, height=500, width=500)
-        canvas.pack()
 
         frame = tk.Frame(root)
-        frame.place(relwidth=1, relheight=1)
+        frame.grid(row=0, column=0)
 
         l =[]
-        for i in db.fetchP():
+        for i in db.fetch("product", "productName"):
             l.append(i[0])
-
+        l.sort()
         i=1
         combos=[]
         while(i<=numberOfProducts):
