@@ -6,6 +6,7 @@ from account import addAccount
 from localization import addLocation
 import chooseProducts
 from db import Database
+import editAccount
 
 db = Database("store.db")
 bgColor = '#FCFCFF'
@@ -22,15 +23,11 @@ def openAddAccount(root):
 def openAddLocation():
     addLocation.AddLocation()
 
-def openChooseProducts(iterrations, hide, email):
-    chooseProducts.ChooseProducts(iterrations, hide, email)
-
 root = tk.Tk()
 root.configure(background=bgColor)
 root.grid_rowconfigure(0, weight=1)
 root.grid_columnconfigure(0, weight=1)
 root.title("Kamil Włodarczyk to kozak")
-
 style = ttk.Style()
 style.configure('TLabel', background="white", foreground=fontColor, font=('Verdana', 12))
 style.configure('TCheckbutton', background="white")
@@ -124,17 +121,20 @@ frame2 = tk.Frame(root, bg=bgColor, borderwidth=1, relief=tk.RIDGE)
 frame2.grid(row=0, column=1, sticky="nwse")
 
 #DODAJ
-frame2a = tk.Frame(frame2, width=207, height=92, bg="white", relief=tk.RIDGE, borderwidth=1)
+frame2a = tk.Frame(frame2, width=207, height=114, bg="white", relief=tk.RIDGE, borderwidth=1)
 frame2a.grid(row=0, column=0, pady=5, padx=5)
 frame2a.grid_propagate(0)
 ttk.Label(frame2a, text="Dodaj", foreground=menuColor).grid(row=0, column=0, sticky="w")
-ttk.Label(frame2a, text="E-mail: ").grid(row=1, column=0)
+ttk.Label(frame2a, text="Nazwa: ").grid(row=1, column=0)
+name = ttk.Entry(frame2a, textvariable=tk.StringVar())
+name.grid(row=1, column=1)
+ttk.Label(frame2a, text="E-mail: ").grid(row=2, column=0)
 email = ttk.Entry(frame2a, textvariable=tk.StringVar())
-email.grid(row=1, column=1)
-ttk.Label(frame2a, text="Hasło: ").grid(row=2, column=0)
+email.grid(row=2, column=1)
+ttk.Label(frame2a, text="Hasło: ").grid(row=3, column=0)
 password = ttk.Entry(frame2a, textvariable=tk.StringVar())
-password.grid(row=2, column=1)
-button = tk.Button(frame2a, width=8, background=menuColor, activebackground=acriveColor, relief=tk.SOLID, borderwidth=1, text="Dodaj", command=lambda: db.insert(email.get(), password.get()))
+password.grid(row=3, column=1)
+button = tk.Button(frame2a, width=8, background=menuColor, activebackground=acriveColor, relief=tk.SOLID, borderwidth=1, text="Dodaj", command=lambda: db.insert(email.get(), password.get(), name.get()))
 button.grid(row=4, column=1)
 
 #EDYTUJ
@@ -142,13 +142,13 @@ frame2b = tk.Frame(frame2, bg="white", relief=tk.RIDGE, borderwidth=1)
 frame2b.grid(row=1, column=0, pady=5, padx=5)
 ttk.Label(frame2b, text="Edytuj", foreground=menuColor).grid(row=0, column=0, sticky="w")
 ttk.Label(frame2b, text="Email: ").grid(row=1, column=0)
-combo = ttk.Combobox(frame2b, state="readonly", value=db.fetch("parts", "email"))
-combo.grid(row=1, column=1)
-button = tk.Button(frame2b, width=8, background=menuColor, activebackground=acriveColor, relief=tk.SOLID, borderwidth=1, text="Edytuj")
+comboEditAccount = ttk.Combobox(frame2b, state="readonly", value=db.fetch("parts", "name"))
+comboEditAccount.grid(row=1, column=1)
+button = tk.Button(frame2b, width=8, background=menuColor, activebackground=acriveColor, relief=tk.SOLID, borderwidth=1, text="Edytuj", command=lambda: editAccount.EditAccount(comboEditAccount.get()))
 button.grid(row=2, column=1)
 
 #USUŃ
-def updateCombo(combo):
+def updateComboA(combo):
     db.remove("parts", "email", combo.get())
     emails=db.fetch("parts", "email")
     combo.config(value=emails[0])
@@ -157,9 +157,9 @@ frame2c = tk.Frame(frame2, bg="white", relief=tk.RIDGE, borderwidth=1)
 frame2c.grid(row=2, column=0, pady=5, padx=5)
 ttk.Label(frame2c, text="Usuń", foreground=menuColor).grid(row=0, column=0, sticky="w")
 ttk.Label(frame2c, text="Email: ").grid(row=1, column=0)
-combo = ttk.Combobox(frame2c, state="readonly", value=db.fetch("parts", "email"))
-combo.grid(row=1, column=1)
-button = tk.Button(frame2c, width=8, background=menuColor, activebackground=acriveColor, relief=tk.SOLID, borderwidth=1, text="Usuń", command=lambda: updateCombo(combo))
+comboA = ttk.Combobox(frame2c, state="readonly", value=db.fetch("parts", "name"))
+comboA.grid(row=1, column=1)
+button = tk.Button(frame2c, width=8, background=menuColor, activebackground=acriveColor, relief=tk.SOLID, borderwidth=1, text="Usuń", command=lambda: updateComboA(comboA))
 button.grid(row=2, column=1)
 
 frame3 = tk.Frame(root, bg=bgColor, borderwidth=1, relief=tk.RIDGE)
@@ -171,13 +171,13 @@ def addImage(frame, button):
     i=4
     global imageNames
     imageNames=filedialog.askopenfilenames(initialdir="/", title="Wybierz zdjęcia", filetypes=[("Obrazy",".bmp .tif .tiff .png .gif .jpg .jpeg .jfif .pjpeg .pjp")])
-    for name in imageNames:
-        button.grid(row=i+1, column=1)
-        label = tk.Label(frame, text=name)
-        label.grid(row=i, column=2)
-        deleteButton = tk.Button(frame, width=8, background=menuColor, text="Usuń")
-        deleteButton.grid(row=i, column=3)
-        i+=1
+    # for name in imageNames:
+    #     button.grid(row=i+1, column=1)
+    #     label = tk.Label(frame, text=name)
+    #     label.grid(row=i, column=2)
+    #     deleteButton = tk.Button(frame, width=8, background=menuColor, text="Usuń")
+    #     deleteButton.grid(row=i, column=3)
+    #     i+=1
 def addProduct(product, title, price, desc, category):
     global imageNames
     db.insertP(product, title, price, desc, category)
@@ -203,12 +203,12 @@ ttk.Label(frame3a, text="Kategoria: ").grid(row=5, column=0)
 l =[]
 for i in db.fetch("categories", "category"):
     l.append(i[0])
-combo = ttk.Combobox(frame3a, state="readonly", value=l)
-combo.grid(row=5, column=1)
+comboC = ttk.Combobox(frame3a, state="readonly", value=l)
+comboC.grid(row=5, column=1)
 ttk.Label(frame3a, text="Zdjęcia: ").grid(row=6, column=0)
 images = tk.Button(frame3a, width=8, background=menuColor, text="Wybierz", relief=tk.SOLID, borderwidth=1, activebackground=acriveColor, command=lambda: addImage(frame, button))
 images.grid(row=6, column=1)
-button = tk.Button(frame3a, width=8, background=menuColor, text="Dodaj", relief=tk.SOLID, borderwidth=1, activebackground=acriveColor, command=lambda: addProduct(product.get(), title.get(), price.get(), desc.get(), db.getC(combo.get())))
+button = tk.Button(frame3a, width=8, background=menuColor, text="Dodaj", relief=tk.SOLID, borderwidth=1, activebackground=acriveColor, command=lambda: addProduct(product.get(), title.get(), price.get(), desc.get(), db.getC(comboC.get())))
 button.grid(row=7, column=1)
 
 #EDYTUJ
@@ -226,19 +226,24 @@ button = tk.Button(frame3b, width=8, background=menuColor, activebackground=acri
 button.grid(row=2, column=1)
 
 #USUŃ
-def updateCombo(combo):
+def updateComboP(combo):
+    db.removeImages(combo.get())
     db.remove("product", "productname", combo.get())
-    products=db.fetchP()
-    combo.config(value=products[0])
+    products=db.fetch("product", "productName")
     combo.set(products)
+    combo.config(value=products[0])
+
 frame3c = tk.Frame(frame3, width=241, height=70, bg="white", relief=tk.RIDGE, borderwidth=1)
 frame3c.grid(row=2, column=0, pady=5, padx=5)
 frame3c.grid_propagate(0)
 ttk.Label(frame3c, text="Usuń", foreground=menuColor).grid(row=0, column=0, sticky="w")
 ttk.Label(frame3c, text="Produkt: ").grid(row=1, column=0)
-combo = ttk.Combobox(frame3c, state="readonly", value=db.fetch("product", "productName"))
-combo.grid(row=1, column=1)
-button = tk.Button(frame3c, width=8, background=menuColor, activebackground=acriveColor, relief=tk.SOLID, borderwidth=1, text="Usuń", command=lambda: updateCombo(combo))
+l2 =[]
+for i in db.fetch("product", "productName"):
+    l2.append(i[0])
+comboP = ttk.Combobox(frame3c, state="readonly", value=l2)
+comboP.grid(row=1, column=1)
+button = tk.Button(frame3c, width=8, background=menuColor, activebackground=acriveColor, relief=tk.SOLID, borderwidth=1, text="Usuń", command=lambda: updateComboP(comboP))
 button.grid(row=2, column=1)
 
 frame4 = tk.Frame(root, bg=bgColor, borderwidth=1, relief=tk.RIDGE)
@@ -268,18 +273,18 @@ button = tk.Button(frame4a, width=8, background=menuColor, text="Dodaj", activeb
 button.grid(row=2, column=1)
 
 #USUŃ
-def updateCombo(combo):
+def updateComboL(combo):
     db.remove("localizations", "localization", combo.get())
-    locations=db.fetchL()
+    locations=db.fetch("localizations", "localization")
     combo.config(value=locations[0])
     combo.set(locations)
 frame4c = tk.Frame(frame4, bg="white", relief=tk.RIDGE, borderwidth=1)
 frame4c.grid(row=2, column=0, pady=5, padx=5)
 ttk.Label(frame4c, text="Usuń", foreground=menuColor).grid(row=0, column=0, sticky="w")
 ttk.Label(frame4c, text="Lokalizacja: ").grid(row=1, column=0)
-combo = ttk.Combobox(frame4c, state="readonly", value=db.fetch("localizations", "localization"))
-combo.grid(row=1, column=1)
-button = tk.Button(frame4c, width=8, background=menuColor, activebackground=acriveColor, text="Usuń", relief=tk.SOLID, borderwidth=1, command=lambda: updateCombo(combo))
+comboL = ttk.Combobox(frame4c, state="readonly", value=db.fetch("localizations", "localization"))
+comboL.grid(row=1, column=1)
+button = tk.Button(frame4c, width=8, background=menuColor, activebackground=acriveColor, text="Usuń", relief=tk.SOLID, borderwidth=1, command=lambda: updateComboL(comboL))
 button.grid(row=2, column=1)
 
 frame1 = tk.Frame(root, bg=bgColor, borderwidth=1, relief=tk.RIDGE)
@@ -287,14 +292,20 @@ frame1.grid(row=0, column=1, sticky="nwse")
 ttk.Label(frame1, text="Ukryj: ").grid(row=0, column=0)
 var1 = tk.IntVar(value=1)
 check = ttk.Checkbutton(frame1, variable=var1).grid(row=0, column=1, sticky="w")
+ttk.Label(frame1, text="Jeden rodzaj: ").grid(row=1, column=0)
+var2 = tk.IntVar(value=0)
+check1 = ttk.Checkbutton(frame1, variable=var2).grid(row=1, column=1, sticky="w")
+l1 =[]
+for i in db.fetch("parts", "name"):
+    l1.append(i[0])
 ttk.Label(frame1, text="Konto: ").grid(row=2, column=0)
-combo1 = ttk.Combobox(frame1, state="readonly", value=db.fetch("parts", "email"))
+combo1 = ttk.Combobox(frame1, state="readonly", value=l1)
 #combo1.current(0)
 combo1.grid(row=2, column=1, sticky="w")
 ttk.Label(frame1, text="Ile ogłoszeń: ").grid(row=3, column=0)
 iterrations = ttk.Entry(frame1, textvariable=tk.IntVar(value=1))
 iterrations.grid(row=3, column=1, sticky="w")
-runButton = tk.Button(frame1, background=menuColor, width=8, text="Uruchom", activebackground=acriveColor, relief=tk.SOLID, borderwidth=1, command=lambda: openChooseProducts(int(iterrations.get()), var1.get(), combo1.get()))
+runButton = tk.Button(frame1, background=menuColor, width=8, text="Uruchom", activebackground=acriveColor, relief=tk.SOLID, borderwidth=1, command=lambda: chooseProducts.ChooseProducts(int(iterrations.get()), var1.get(), var2.get(), combo1.get()))
 runButton.grid(row=4, column=1, sticky="w")
 
 root.grid_columnconfigure(1, weight=1)

@@ -4,10 +4,14 @@ class Database:
     def __init__(self, db):
         self.conn = sqlite3.connect(db)
         self.cur = self.conn.cursor()
-        self.cur.execute("CREATE TABLE IF NOT EXISTS parts (id INTEGER PRIMARY KEY, email text, password text)")
+        self.cur.execute("CREATE TABLE IF NOT EXISTS parts (id INTEGER PRIMARY KEY, email text, password text, name text)")
         self.cur.execute("CREATE TABLE IF NOT EXISTS product (id INTEGER PRIMARY KEY, productName text, title text, price INTEGER, description text, category INTEGER, FOREIGN KEY(category) REFERENCES categories(id))")
         self.cur.execute("CREATE TABLE IF NOT EXISTS localizations (id INTEGER PRIMARY KEY, localization text)")
         self.cur.execute("CREATE TABLE IF NOT EXISTS photos (id INTEGER PRIMARY KEY, path text, product INTEGER, FOREIGN KEY(product) REFERENCES products(id))")
+        self.conn.commit()
+
+    def addColumn(self):
+        self.cur.execute("ALTER TABLE parts ADD name text")
         self.conn.commit()
 
     def fetch(self, table, column):
@@ -19,17 +23,22 @@ class Database:
         self.cur.execute("DELETE FROM " + table + " WHERE " + column + " = ?", (criterion,))
         self.conn.commit()
 
-    def getA(self, email):
-        self.cur.execute("SELECT password FROM parts WHERE email = ?", (email,))
+    def removeImages(self, product):
+        id = self.getP(product)[0]
+        self.cur.execute("DELETE FROM photos WHERE product = ?", (id,))
+        self.conn.commit()
+
+    def getA(self, column, nazwa):
+        self.cur.execute("SELECT " + column + " FROM parts WHERE name = ?", (nazwa,))
         data = self.cur.fetchone()
         return data[0]
 
-    def insert(self, email, password):
-        self.cur.execute("INSERT INTO parts VALUES (NULL, ?, ?)", (email, password))
+    def insert(self, email, password, name):
+        self.cur.execute("INSERT INTO parts VALUES (NULL, ?, ?, ?)", (email, password, name))
         self.conn.commit()
 
-    def update(self, id, email, password):
-        self.cur.execute("UPDATE parts SET email = ?, password = ? WHERE id = ?", (email, password, id))
+    def update(self, column, new, old):
+        self.cur.execute("UPDATE parts SET " + column + " = ? WHERE email = ?", (new,old))
         self.conn.commit()
 
     def insertL(self, localization):

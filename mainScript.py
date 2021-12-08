@@ -3,13 +3,17 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 import time
 import random
+import clipboard
 
 from db import Database
 
 db = Database("store.db")
 
 class MainScript:
-    def __init__(self, hide, email1, products):
+    def __init__(self, hide, email1, products, images):
+
+
+
         PATH = "driver/chromedriver.exe"
         option = Options()
         option.add_argument("--disable-infobars")
@@ -24,11 +28,13 @@ class MainScript:
         # Logowanie
         driver.get("https://facebook.com")
         email = driver.find_element_by_id("email")
-        email.send_keys(email1)
+        email.send_keys(db.getA("email", email1))
         password = driver.find_element_by_id("pass")
-        password.send_keys(db.getA(email1))
+        password.send_keys(db.getA("password", email1))
         password.send_keys(Keys.ENTER)
         time.sleep(6)
+
+        counter=0
         for product1 in products:
 
             # Przejście do postowania ogłoszenia
@@ -36,25 +42,24 @@ class MainScript:
             time.sleep(2)
 
             # Zdjęcia
-            images = db.fetchI(product1)
+            images1 = db.fetchI(product1)
+            images2=[]
+            for image in images[counter]:
+                images2.append(images1[int(image)-1])
+            counter += 1
             photos = driver.find_element_by_xpath("//input[@accept='image/*,image/heif,image/heic']")
             paths=""
-            counter=0
-            for image in images:
+            for image in images2:
                 paths = paths+image[0]+"\n"
-                if counter==0:
-                    counter=31
-                elif counter<36:
-                    counter+=5
-                else:
-                    counter+=2
             paths=paths[:len(paths)-1]
             photos.send_keys(paths)
 
             # Tytuł
             title = driver.find_element_by_xpath("//label[@aria-label='Tytuł']")
-            title.send_keys(product1)
             product = db.getP(product1)
+            clipboard.copy(product[2])
+            title.send_keys(Keys.CONTROL + "v")
+            #title.send_keys(product[2])
 
             # Cena
             price = driver.find_element_by_xpath("//label[@aria-label='Cena']")
@@ -65,7 +70,8 @@ class MainScript:
             kategoria.click()
             time.sleep(1)
             tools = driver.find_elements_by_xpath("//div[@role='button']")
-            tools[counter+int(product[5])-1].click()
+            print(product[5])
+            tools[len(tools)-1-(26-product[5])].click()
 
             # Stan WIP
             stan = driver.find_element_by_xpath("//label[@aria-label='Stan']")
