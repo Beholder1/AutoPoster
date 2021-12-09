@@ -235,7 +235,7 @@ ttk.Label(frame3c, text="Usuń", foreground=menuColor).grid(row=0, column=0, sti
 ttk.Label(frame3c, text="Produkt: ").grid(row=1, column=0)
 comboPD = ttk.Combobox(frame3c, state="readonly", value=l)
 comboPD.grid(row=1, column=1)
-button = tk.Button(frame3c, width=8, background=menuColor, activebackground=acriveColor, relief=tk.SOLID, borderwidth=1, text="Usuń", command=lambda: updateCombo(comboPD, "product", "productname", l2, comboPE))
+button = tk.Button(frame3c, width=8, background=menuColor, activebackground=acriveColor, relief=tk.SOLID, borderwidth=1, text="Usuń", command=lambda: updateCombo(comboPD, "product", "productname", l, comboPE))
 button.grid(row=2, column=1)
 
 frame4 = tk.Frame(root, bg=bgColor, borderwidth=1, relief=tk.RIDGE)
