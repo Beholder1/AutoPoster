@@ -37,7 +37,7 @@ class Database:
         self.cur.execute("INSERT INTO parts VALUES (NULL, ?, ?, ?)", (email, password, name))
         self.conn.commit()
 
-    def update(self, table, column, new, criterionColumn,old):
+    def update(self, table, column, new, criterionColumn, old):
         self.cur.execute("UPDATE " + table + " SET " + column + " = ? WHERE " + criterionColumn + " = ?", (new,old))
         self.conn.commit()
 

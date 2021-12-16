@@ -22,27 +22,40 @@ class ChooseProducts:
         i=1
         combos=[]
         entries=[]
-        while(i<=numberOfProducts):
-            count = "Produkt "+str(i)+": "
-            tk.Label(frame, text=count).grid(row=i, column=0)
-            if onlyOne == 0:
+        if onlyOne == 0:
+            while(i<=numberOfProducts):
+                count = "Produkt "+str(i)+": "
+                tk.Label(frame, text=count).grid(row=i, column=0)
                 combo = ttk.Combobox(frame, state="readonly", value=l)
                 combo.grid(row=i, column=1)
                 combos.append(combo)
-            else:
-                ttk.Label(frame, text="Produkt: ").grid(row=0, column=0)
-                combo1 = ttk.Combobox(frame, state="readonly", value=l)
-                combo1.grid(row=0, column=1)
-                combos.append(combo1)
-            image = tk.Entry(frame)
-            image.grid(row=i,column=3)
-            entries.append(image)
-            i+=1
+                image = tk.Entry(frame)
+                image.grid(row=i,column=3)
+                entries.append(image)
+                i+=1
+        else:
+            ttk.Label(frame, text="Produkt: ").grid(row=0, column=0)
+            combo1 = ttk.Combobox(frame, state="readonly", value=l)
+            combo1.grid(row=0, column=1)
+            while i <= numberOfProducts:
+                count = "Produkt " + str(i) + ": "
+                tk.Label(frame, text=count).grid(row=i, column=0)
+                image = tk.Entry(frame)
+                image.grid(row=i, column=3)
+                entries.append(image)
+                i += 1
+
 
         def productsGet():
             products=[]
-            for combo in combos:
-                products.append(combo.get())
+            if onlyOne == 0:
+                for combo in combos:
+                    products.append(combo.get())
+            else:
+                j = 0
+                while j < numberOfProducts:
+                    products.append(combo1.get())
+                    j += 1
             return products
 
         def imagesGet():

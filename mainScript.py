@@ -1,6 +1,9 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
 import time
 import random
 import clipboard
@@ -11,8 +14,6 @@ db = Database("store.db")
 
 class MainScript:
     def __init__(self, hide, email1, products, images):
-
-
 
         PATH = "driver/chromedriver.exe"
         option = Options()
@@ -32,14 +33,14 @@ class MainScript:
         password = driver.find_element_by_id("pass")
         password.send_keys(db.getA("password", email1))
         password.send_keys(Keys.ENTER)
-        time.sleep(6)
-
+        time.sleep(4)
+        print(products)
         counter=0
         for product1 in products:
 
             # Przejście do postowania ogłoszenia
             driver.get("https://www.facebook.com/marketplace/create/item")
-            time.sleep(2)
+            time.sleep(4)
 
             # Zdjęcia
             images1 = db.fetchI(product1)
@@ -47,10 +48,11 @@ class MainScript:
             for image in images[counter]:
                 images2.append(images1[int(image)-1])
             counter += 1
-            photos = driver.find_element_by_xpath("//input[@accept='image/*,image/heif,image/heic']")
+            photos = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//input[@accept='image/*,image/heif,image/heic']")))
             paths=""
             for image in images2:
                 paths = paths+image[0]+"\n"
+
             paths=paths[:len(paths)-1]
             photos.send_keys(paths)
 
@@ -70,7 +72,6 @@ class MainScript:
             kategoria.click()
             time.sleep(1)
             tools = driver.find_elements_by_xpath("//div[@role='button']")
-            print(product[5])
             tools[len(tools)-1-(26-product[5])].click()
 
             # Stan WIP
@@ -93,7 +94,12 @@ class MainScript:
 
             # Lokalizacja
             location = driver.find_element_by_xpath("//label[@aria-label='Lokalizacja']")
-            location.send_keys(Keys.BACKSPACE * 10 + db.getL(random.randint(1,db.getNumberL())))
+            locations = db.fetch("localizations", "localization")
+            counter1 = 0
+            for i in locations:
+                locations[counter1] = i[0]
+                counter1 += 1
+            location.send_keys(Keys.BACKSPACE * 10 + locations[random.randint(0,len(locations)-1)])
             location.click()
             time.sleep(1)
             location.send_keys(Keys.ARROW_DOWN + Keys.ENTER)
@@ -108,7 +114,7 @@ class MainScript:
             next.click()
 
             # Opublikuj
-            time.sleep(2)
+            time.sleep(5)
             post = driver.find_element_by_xpath("//div[@aria-label='Opublikuj']")
             post.click()
 
