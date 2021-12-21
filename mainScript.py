@@ -1,3 +1,4 @@
+import selenium.common.exceptions
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
@@ -11,6 +12,7 @@ import clipboard
 from db import Database
 
 db = Database("store.db")
+
 
 class MainScript:
     def __init__(self, hide, email1, products, images):
@@ -34,8 +36,7 @@ class MainScript:
         password.send_keys(db.getA("password", email1))
         password.send_keys(Keys.ENTER)
         time.sleep(4)
-        print(products)
-        counter=0
+        counter = 0
         for product1 in products:
 
             # Przejście do postowania ogłoszenia
@@ -44,16 +45,17 @@ class MainScript:
 
             # Zdjęcia
             images1 = db.fetchI(product1)
-            images2=[]
+            images2 = []
             for image in images[counter]:
-                images2.append(images1[int(image)-1])
+                images2.append(images1[int(image) - 1])
             counter += 1
-            photos = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//input[@accept='image/*,image/heif,image/heic']")))
-            paths=""
+            photos = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//input[@accept='image/*,image/heif,image/heic']")))
+            paths = ""
             for image in images2:
-                paths = paths+image[0]+"\n"
+                paths = paths + image[0] + "\n"
 
-            paths=paths[:len(paths)-1]
+            paths = paths[:len(paths) - 1]
             photos.send_keys(paths)
 
             # Tytuł
@@ -61,7 +63,7 @@ class MainScript:
             product = db.getP(product1)
             clipboard.copy(product[2])
             title.send_keys(Keys.CONTROL + "v")
-            #title.send_keys(product[2])
+            # title.send_keys(product[2])
 
             # Cena
             price = driver.find_element_by_xpath("//label[@aria-label='Cena']")
@@ -72,13 +74,21 @@ class MainScript:
             kategoria.click()
             time.sleep(1)
             tools = driver.find_elements_by_xpath("//div[@role='button']")
-            tools[len(tools)-1-(26-product[5])].click()
+            tools[len(tools) - 1 - (26 - product[5])].click()
 
             # Stan WIP
+            time.sleep(5)
             stan = driver.find_element_by_xpath("//label[@aria-label='Stan']")
             stan.click()
-            time.sleep(1)
-            test = driver.find_element_by_xpath("//div[@role='menuitemradio']")
+            time.sleep(5)
+            try:
+                test = WebDriverWait(driver, 5).until(
+                    EC.presence_of_element_located((By.XPATH, "//div[@role='menuitemradio']")))
+            except selenium.common.exceptions.StaleElementReferenceException:
+                stan.click()
+                test = WebDriverWait(driver, 5).until(
+                    EC.presence_of_element_located((By.XPATH, "//div[@role='menuitemradio']")))
+
             test.click()
 
             # Opis
@@ -88,8 +98,8 @@ class MainScript:
             # Dostępność
             accessibility = driver.find_element_by_xpath("//label[@aria-label='Dostępność']")
             accessibility.click()
-            time.sleep(1)
-            avaible = driver.find_element_by_xpath("//div[@aria-checked='false']")
+            avaible = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//div[@aria-checked='false']")))
             avaible.click()
 
             # Lokalizacja
@@ -99,7 +109,7 @@ class MainScript:
             for i in locations:
                 locations[counter1] = i[0]
                 counter1 += 1
-            location.send_keys(Keys.BACKSPACE * 10 + locations[random.randint(0,len(locations)-1)])
+            location.send_keys(Keys.BACKSPACE * 10 + locations[random.randint(0, len(locations) - 1)])
             location.click()
             time.sleep(1)
             location.send_keys(Keys.ARROW_DOWN + Keys.ENTER)
@@ -107,7 +117,7 @@ class MainScript:
             # Ukryj przed znajomymi
             if hide != 0:
                 hideBeforeFriends = driver.find_elements_by_xpath("//input[@aria-label='Włączone']")
-                hideBeforeFriends[1].click()
+                hideBeforeFriends[len(hideBeforeFriends) - 1].click()
 
             # Dalej
             next = driver.find_element_by_xpath("//div[@aria-label='Dalej']")

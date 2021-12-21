@@ -1,13 +1,17 @@
 import sqlite3
 
+
 class Database:
     def __init__(self, db):
         self.conn = sqlite3.connect(db)
         self.cur = self.conn.cursor()
-        self.cur.execute("CREATE TABLE IF NOT EXISTS parts (id INTEGER PRIMARY KEY, email text, password text, name text)")
-        self.cur.execute("CREATE TABLE IF NOT EXISTS product (id INTEGER PRIMARY KEY, productName text, title text, price INTEGER, description text, category INTEGER, FOREIGN KEY(category) REFERENCES categories(id))")
+        self.cur.execute(
+            "CREATE TABLE IF NOT EXISTS parts (id INTEGER PRIMARY KEY, email text, password text, name text)")
+        self.cur.execute(
+            "CREATE TABLE IF NOT EXISTS product (id INTEGER PRIMARY KEY, productName text, title text, price INTEGER, description text, category INTEGER, FOREIGN KEY(category) REFERENCES categories(id))")
         self.cur.execute("CREATE TABLE IF NOT EXISTS localizations (id INTEGER PRIMARY KEY, localization text)")
-        self.cur.execute("CREATE TABLE IF NOT EXISTS photos (id INTEGER PRIMARY KEY, path text, product INTEGER, FOREIGN KEY(product) REFERENCES products(id))")
+        self.cur.execute(
+            "CREATE TABLE IF NOT EXISTS photos (id INTEGER PRIMARY KEY, path text, product INTEGER, FOREIGN KEY(product) REFERENCES products(id))")
         self.conn.commit()
 
     def addColumn(self):
@@ -38,7 +42,7 @@ class Database:
         self.conn.commit()
 
     def update(self, table, column, new, criterionColumn, old):
-        self.cur.execute("UPDATE " + table + " SET " + column + " = ? WHERE " + criterionColumn + " = ?", (new,old))
+        self.cur.execute("UPDATE " + table + " SET " + column + " = ? WHERE " + criterionColumn + " = ?", (new, old))
         self.conn.commit()
 
     def insertL(self, localization):
@@ -56,7 +60,8 @@ class Database:
         return data[0]
 
     def insertP(self, productName, title, price, description, category):
-        self.cur.execute("INSERT INTO product VALUES (NULL, ?, ?, ?, ?, ?)", (productName, title, price, description, category))
+        self.cur.execute("INSERT INTO product VALUES (NULL, ?, ?, ?, ?, ?)",
+                         (productName, title, price, description, category))
         self.conn.commit()
 
     def getP(self, productName):
@@ -83,6 +88,12 @@ class Database:
         self.cur.execute("SELECT path FROM photos WHERE product = ?", (id,))
         images = self.cur.fetchall()
         return images
+
+    def countI(self, productName):
+        product = self.getP(productName)
+        self.cur.execute("SELECT COUNT(*) FROM photos WHERE product = ?", (product[0],))
+        numberOfImages = self.cur.fetchall()
+        return numberOfImages[0][0]
 
     def __del__(self):
         self.conn.close()
