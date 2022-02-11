@@ -9,14 +9,10 @@ import time
 import random
 import clipboard
 
-from db import Database
-
-db = Database("store.db")
-
 
 class MainScript:
-    def __init__(self, hide, email1, products, images):
-
+    def __init__(self, db, hide, email1, products, images):
+        self.db = db
         PATH = "driver/chromedriver.exe"
         option = Options()
         option.add_argument("--disable-infobars")
@@ -31,20 +27,25 @@ class MainScript:
         # Logowanie
         driver.get("https://facebook.com")
         email = driver.find_element_by_id("email")
-        email.send_keys(db.getA("email", email1))
+        email.send_keys(self.db.getA("email", email1))
         password = driver.find_element_by_id("pass")
-        password.send_keys(db.getA("password", email1))
+        password.send_keys(self.db.getA("password", email1))
         password.send_keys(Keys.ENTER)
         time.sleep(4)
         counter = 0
         for product1 in products:
+            categories = db.getPC(product1[0])
+            categoriesIds = []
+            for i in categories:
+                categoriesIds.append(i[2])
+            category = categoriesIds[random.randint(0, len(categoriesIds) - 1)]
 
             # Przejście do postowania ogłoszenia
             driver.get("https://www.facebook.com/marketplace/create/item")
             time.sleep(4)
 
             # Zdjęcia
-            images1 = db.fetchI(product1)
+            images1 = self.db.fetchI(product1)
             images2 = []
             for image in images[counter]:
                 images2.append(images1[int(image) - 1])
@@ -60,7 +61,7 @@ class MainScript:
 
             # Tytuł
             title = driver.find_element_by_xpath("//label[@aria-label='Tytuł']")
-            product = db.getP(product1)
+            product = self.db.getP(product1)
             clipboard.copy(product[2])
             title.send_keys(Keys.CONTROL + "v")
             # title.send_keys(product[2])
@@ -74,7 +75,7 @@ class MainScript:
             kategoria.click()
             time.sleep(1)
             tools = driver.find_elements_by_xpath("//div[@role='button']")
-            tools[len(tools) - 1 - (26 - product[5])].click()
+            tools[len(tools) - 1 - (26 - category)].click()
 
             # Stan WIP
             time.sleep(5)
@@ -83,11 +84,11 @@ class MainScript:
             time.sleep(5)
             try:
                 test = WebDriverWait(driver, 5).until(
-                    EC.presence_of_element_located((By.XPATH, "//div[@role='menuitemradio']")))
+                    EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Nowy']")))
             except selenium.common.exceptions.StaleElementReferenceException:
                 stan.click()
                 test = WebDriverWait(driver, 5).until(
-                    EC.presence_of_element_located((By.XPATH, "//div[@role='menuitemradio']")))
+                    EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Nowy']")))
 
             test.click()
 
@@ -104,14 +105,15 @@ class MainScript:
 
             # Lokalizacja
             location = driver.find_element_by_xpath("//label[@aria-label='Lokalizacja']")
-            locations = db.fetch("localizations", "localization")
+            locations = self.db.fetch("localizations", "localization")
             counter1 = 0
             for i in locations:
                 locations[counter1] = i[0]
                 counter1 += 1
+            time.sleep(5)
             location.send_keys(Keys.BACKSPACE * 10 + locations[random.randint(0, len(locations) - 1)])
             location.click()
-            time.sleep(1)
+            time.sleep(5)
             location.send_keys(Keys.ARROW_DOWN + Keys.ENTER)
 
             # Ukryj przed znajomymi

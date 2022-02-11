@@ -12,7 +12,21 @@ class Database:
         self.cur.execute("CREATE TABLE IF NOT EXISTS localizations (id INTEGER PRIMARY KEY, localization text)")
         self.cur.execute(
             "CREATE TABLE IF NOT EXISTS photos (id INTEGER PRIMARY KEY, path text, product INTEGER, FOREIGN KEY(product) REFERENCES products(id))")
+        self.cur.execute(
+            "CREATE TABLE IF NOT EXISTS categoriesForProducts (id INTEGER PRIMARY KEY, product INTEGER, category INTEGER, FOREIGN KEY(product) REFERENCES products(id), FOREIGN KEY(category) REFERENCES categories(id))")
         self.conn.commit()
+        # k = self.fetch("product", "*")
+        # for i in k:
+        #     self.cur.execute("INSERT INTO categoriesForProducts VALUES (NULL, " + str(i[0]) + ", " + str(i[5]) + ")")
+        #     self.conn.commit()
+        # self.cur.execute("PRAGMA foreign_keys=off;")
+        # self.cur.execute("BEGIN TRANSACTION;")
+        # self.cur.execute("ALTER TABLE product RENAME TO sfdg;")
+        # self.cur.execute("CREATE TABLE product (id INTEGER PRIMARY KEY, productName text, title text, price INTEGER, description text);")
+        # self.cur.execute("INSERT INTO product SELECT id, productName, title, price, description FROM sfdg;")
+        # self.cur.execute("COMMIT;")
+        # self.cur.execute("PRAGMA foreign_keys=on;")
+        # self.conn.commit()
 
     def addColumn(self):
         self.cur.execute("ALTER TABLE parts ADD name text")
@@ -30,6 +44,11 @@ class Database:
     def removeImages(self, product):
         id = self.getP(product)[0]
         self.cur.execute("DELETE FROM photos WHERE product = ?", (id,))
+        self.conn.commit()
+
+    def removeCategories(self, product):
+        id = self.getP(product)[0]
+        self.cur.execute("DELETE FROM categoriesForProducts WHERE product = ?", (id,))
         self.conn.commit()
 
     def getA(self, column, nazwa):
@@ -59,9 +78,9 @@ class Database:
         data = self.cur.fetchone()
         return data[0]
 
-    def insertP(self, productName, title, price, description, category):
-        self.cur.execute("INSERT INTO product VALUES (NULL, ?, ?, ?, ?, ?)",
-                         (productName, title, price, description, category))
+    def insertP(self, productName, title, price, description):
+        self.cur.execute("INSERT INTO product VALUES (NULL, ?, ?, ?, ?)",
+                         (productName, title, price, description))
         self.conn.commit()
 
     def getP(self, productName):
@@ -69,15 +88,19 @@ class Database:
         data = self.cur.fetchone()
         return data
 
-    def getPC(self, productName):
-        self.cur.execute("SELECT category FROM product WHERE productName = ?", (productName,))
-        data = self.cur.fetchone()
-        return data[0]
+    def getPC(self, productId):
+        self.cur.execute("SELECT category FROM categoriesForProducts WHERE product = ?", (productId,))
+        data = self.cur.fetchall()
+        return data
 
     def getC(self, category):
         self.cur.execute("SELECT id FROM categories WHERE category = ?", (category,))
         id = self.cur.fetchall()
         return id[0][0]
+
+    def insertC(self, product, category):
+        self.cur.execute("INSERT INTO categoriesForProducts VALUES (NULL, ?, ?)", (product, category,))
+        self.conn.commit()
 
     def insertI(self, path, product):
         self.cur.execute("INSERT INTO photos VALUES (NULL, ?, ?)", (path, product,))

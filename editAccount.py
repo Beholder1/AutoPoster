@@ -1,17 +1,15 @@
 import tkinter as tk
 from tkinter import ttk
-from db import Database
-
-db = Database("store.db")
 
 
 class EditAccount:
-    def __init__(self, account):
+    def __init__(self, account, db):
+        self.db = db
         root = tk.Tk()
         self.account = account
 
         def updateAccount():
-            db.update("parts", "name", entry1.get(), "name", self.account)
+            self.db.update("parts", "name", entry1.get(), "name", self.account)
             self.account = entry1.get()
 
         frame1 = tk.Frame(root, relief=tk.RIDGE, borderwidth=1)

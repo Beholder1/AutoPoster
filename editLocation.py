@@ -1,15 +1,14 @@
 import tkinter as tk
 from tkinter import ttk
-from db import Database
 
-db = Database("store.db")
 
 class EditLocation:
-    def __init__(self, location):
+    def __init__(self, location, db):
+        self.db = db
         root = tk.Tk()
         self.location=location
         def updateLocation():
-            db.update("localizations", "localization", entry1.get(), "localization", self.location)
+            self.db.update("localizations", "localization", entry1.get(), "localization", self.location)
             self.location = entry1.get()
 
         frame1 = tk.Frame(root, relief=tk.RIDGE, borderwidth=1)

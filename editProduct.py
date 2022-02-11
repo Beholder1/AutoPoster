@@ -1,17 +1,15 @@
 import tkinter as tk
 from tkinter import ttk
-from db import Database
-
-db = Database("store.db")
 
 
 class EditProduct:
-    def __init__(self, product):
+    def __init__(self, product, db):
+        self.db = db
         root = tk.Tk()
         self.product = product
 
         def updateProduct():
-            db.update("product", "productName", entry1.get(), "productName", self.product)
+            self.db.update("product", "productName", entry1.get(), "productName", self.product)
             self.product = entry1.get()
 
         frame1 = tk.Frame(root, relief=tk.RIDGE, borderwidth=1)
