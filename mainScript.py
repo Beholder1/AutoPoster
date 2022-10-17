@@ -5,15 +5,17 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
+from webdriver_manager.chrome import ChromeDriverManager
 import time
 import random
 import clipboard
+from tkinter import ttk
+import tkinter as tk
 
 
 class MainScript:
     def __init__(self, db, hide, email1, products, images):
         self.db = db
-        PATH = "driver/chromedriver.exe"
         option = Options()
         option.add_argument("--disable-infobars")
         option.add_argument("start-maximized")
@@ -22,8 +24,22 @@ class MainScript:
         option.add_experimental_option("prefs", {
             "profile.default_content_setting_values.notifications": 2
         })
-        driver = webdriver.Chrome(chrome_options=option, executable_path=PATH)
 
+        root = tk.Tk()
+        root.geometry('300x120')
+        root.title('Pobieranie')
+        pb = ttk.Progressbar(root, orient='horizontal', mode='indeterminate', length=280)
+        pb.grid()
+
+        pb.start()
+        driver = webdriver.Chrome(ChromeDriverManager(path="driver").install(), chrome_options=option)
+        pb.stop()
+        root.mainloop()
+        time.sleep(10)
+        root.destroy()
+        time.sleep(10)
+
+        exit(0)
         # Logowanie
         driver.get("https://facebook.com")
         email = driver.find_element_by_id("email")
@@ -34,10 +50,11 @@ class MainScript:
         time.sleep(4)
         counter = 0
         for product1 in products:
-            categories = db.getPC(product1[0])
+            product = self.db.getP(product1)
+            categories = db.getPC(product[0])
             categoriesIds = []
             for i in categories:
-                categoriesIds.append(i[2])
+                categoriesIds.append(i[0])
             category = categoriesIds[random.randint(0, len(categoriesIds) - 1)]
 
             # Przejście do postowania ogłoszenia
@@ -61,7 +78,6 @@ class MainScript:
 
             # Tytuł
             title = driver.find_element_by_xpath("//label[@aria-label='Tytuł']")
-            product = self.db.getP(product1)
             clipboard.copy(product[2])
             title.send_keys(Keys.CONTROL + "v")
             # title.send_keys(product[2])
@@ -99,9 +115,9 @@ class MainScript:
             # Dostępność
             accessibility = driver.find_element_by_xpath("//label[@aria-label='Dostępność']")
             accessibility.click()
-            avaible = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//div[@aria-checked='false']")))
-            avaible.click()
+            available = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//div[@aria-selected='false']")))
+            available.click()
 
             # Lokalizacja
             location = driver.find_element_by_xpath("//label[@aria-label='Lokalizacja']")
@@ -118,7 +134,7 @@ class MainScript:
 
             # Ukryj przed znajomymi
             if hide != 0:
-                hideBeforeFriends = driver.find_elements_by_xpath("//input[@aria-label='Włączone']")
+                hideBeforeFriends = driver.find_elements_by_xpath("(//div[@role='switch'])[2]")
                 hideBeforeFriends[len(hideBeforeFriends) - 1].click()
 
             # Dalej

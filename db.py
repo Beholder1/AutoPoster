@@ -41,6 +41,12 @@ class Database:
         self.cur.execute("DELETE FROM " + table + " WHERE " + column + " = ?", (criterion,))
         self.conn.commit()
 
+    def removeC(self, productId, categoryId):
+        print(productId + categoryId)
+        self.cur.execute("DELETE FROM categoriesForProducts WHERE product = ? AND category = ?",
+                         (productId, categoryId,))
+        self.conn.commit()
+
     def removeImages(self, product):
         id = self.getP(product)[0]
         self.cur.execute("DELETE FROM photos WHERE product = ?", (id,))
@@ -62,6 +68,11 @@ class Database:
 
     def update(self, table, column, new, criterionColumn, old):
         self.cur.execute("UPDATE " + table + " SET " + column + " = ? WHERE " + criterionColumn + " = ?", (new, old))
+        self.conn.commit()
+
+    def updateC(self, newCategory, productId, categoryId):
+        self.cur.execute("UPDATE categoriesForProducts SET category = ? WHERE product = ? AND category = ?",
+                         (newCategory, productId, categoryId,))
         self.conn.commit()
 
     def insertL(self, localization):

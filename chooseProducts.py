@@ -6,7 +6,8 @@ import mainScript
 class ChooseProducts:
     def __init__(self, db, numberOfProducts, hide, onlyOne, email):
         self.db = db
-
+        activeColor = "#FDA50F"
+        menuColor = '#FD6A02'
 
         def openScript(hide, email, products, images):
             root.destroy()
@@ -19,8 +20,6 @@ class ChooseProducts:
 
         frame = tk.Frame(root, background='#FCFCFF')
         frame.grid(row=0, column=0)
-        style = ttk.Style()
-        style.configure('TLabel', background="white", foreground="black", font=('Verdana', 12))
 
         l = []
         for i in self.db.fetch("product", "productName"):
@@ -41,8 +40,9 @@ class ChooseProducts:
                 entries.append(image)
                 i += 1
         else:
-            ttk.Label(frame, text="Produkt: ").grid(row=0, column=0)
-            numberOfImages = ttk.Label(frame)
+            ttk.Label(frame, text="Produkt: ", background="#FCFCFF", foreground="black", font=('Verdana', 12)).grid(
+                row=0, column=0)
+            numberOfImages = ttk.Label(frame, background="#FCFCFF", foreground="black", font=('Verdana', 12))
             numberOfImages.grid(row=0, column=2)
             combo1 = ttk.Combobox(frame, state="readonly", value=l)
             combo1.grid(row=0, column=1)
@@ -50,8 +50,9 @@ class ChooseProducts:
 
             while i <= numberOfProducts:
                 count = "Produkt " + str(i) + ": "
-                ttk.Label(frame, text=count).grid(row=i, column=0)
-                image = tk.Entry(frame)
+                ttk.Label(frame, text=count, background="#FCFCFF", foreground="black", font=('Verdana', 12)).grid(row=i,
+                                                                                                                  column=0)
+                image = ttk.Entry(frame)
                 image.grid(row=i, column=2)
                 entries.append(image)
                 i += 1
@@ -74,7 +75,8 @@ class ChooseProducts:
                 images.append(list(entry.get().split(",")))
             return images
 
-        button = tk.Button(frame, text="Uruchom", command=lambda: openScript(hide, email, productsGet(), imagesGet()))
+        button = tk.Button(frame, text="Uruchom", background=menuColor, activebackground=activeColor, relief=tk.SOLID,
+                           borderwidth=1, command=lambda: openScript(hide, email, productsGet(), imagesGet()))
         button.grid(row=numberOfProducts + 1, column=1)
 
         root.mainloop()

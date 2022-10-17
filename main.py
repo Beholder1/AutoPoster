@@ -12,7 +12,7 @@ class Main:
     def __init__(self):
         db = Database("store.db")
         bgColor = '#FCFCFF'
-        acriveColor = "#FDA50F"
+        activeColor = "#FDA50F"
         menuColor = '#FD6A02'
         fontColor = 'black'
 
@@ -148,7 +148,7 @@ class Main:
         ttk.Label(frame2a, text="Hasło: ").grid(row=3, column=0)
         password = ttk.Entry(frame2a, textvariable=tk.StringVar())
         password.grid(row=3, column=1)
-        button = tk.Button(frame2a, width=8, background=menuColor, activebackground=acriveColor, relief=tk.SOLID,
+        button = tk.Button(frame2a, width=8, background=menuColor, activebackground=activeColor, relief=tk.SOLID,
                            borderwidth=1,
                            text="Dodaj", command=lambda: db.insert(email.get(), password.get(), name.get()))
         button.grid(row=4, column=1)
@@ -164,7 +164,7 @@ class Main:
         l5.sort()
         comboAE = ttk.Combobox(frame2b, state="readonly", value=l5)
         comboAE.grid(row=1, column=1)
-        button = tk.Button(frame2b, width=8, background=menuColor, activebackground=acriveColor, relief=tk.SOLID,
+        button = tk.Button(frame2b, width=8, background=menuColor, activebackground=activeColor, relief=tk.SOLID,
                            borderwidth=1,
                            text="Edytuj", command=lambda: editAccount.EditAccount(comboAE.get(), db))
         button.grid(row=2, column=1)
@@ -176,7 +176,7 @@ class Main:
         ttk.Label(frame2c, text="Nazwa: ").grid(row=1, column=0)
         comboAD = ttk.Combobox(frame2c, state="readonly", value=l5)
         comboAD.grid(row=1, column=1)
-        button = tk.Button(frame2c, width=8, background=menuColor, activebackground=acriveColor, relief=tk.SOLID,
+        button = tk.Button(frame2c, width=8, background=menuColor, activebackground=activeColor, relief=tk.SOLID,
                            borderwidth=1,
                            text="Usuń", command=lambda: updateCombo(comboAD, "parts", "name", l5, comboAE))
         button.grid(row=2, column=1)
@@ -234,10 +234,10 @@ class Main:
         comboC.grid(row=5, column=1)
         ttk.Label(frame3a, text="Zdjęcia: ").grid(row=6, column=0)
         images = tk.Button(frame3a, width=8, background=menuColor, text="Wybierz", relief=tk.SOLID, borderwidth=1,
-                           activebackground=acriveColor, command=lambda: addImage(frame, button))
+                           activebackground=activeColor, command=lambda: addImage(frame, button))
         images.grid(row=6, column=1)
         button = tk.Button(frame3a, width=8, background=menuColor, text="Dodaj", relief=tk.SOLID, borderwidth=1,
-                           activebackground=acriveColor,
+                           activebackground=activeColor,
                            command=lambda: addProduct(product.get(), title.get(), price.get(), desc.get(),
                                                       db.getC(comboC.get())))
         button.grid(row=7, column=1)
@@ -254,7 +254,7 @@ class Main:
         l.sort()
         comboPE = ttk.Combobox(frame3b, state="readonly", value=l)
         comboPE.grid(row=1, column=1)
-        button = tk.Button(frame3b, width=8, background=menuColor, activebackground=acriveColor, relief=tk.SOLID,
+        button = tk.Button(frame3b, width=8, background=menuColor, activebackground=activeColor, relief=tk.SOLID,
                            borderwidth=1,
                            text="Edytuj", command=lambda: editProduct.EditProduct(comboPE.get(), db))
         button.grid(row=2, column=1)
@@ -267,7 +267,7 @@ class Main:
         ttk.Label(frame3c, text="Produkt: ").grid(row=1, column=0)
         comboPD = ttk.Combobox(frame3c, state="readonly", value=l)
         comboPD.grid(row=1, column=1)
-        button = tk.Button(frame3c, width=8, background=menuColor, activebackground=acriveColor, relief=tk.SOLID,
+        button = tk.Button(frame3c, width=8, background=menuColor, activebackground=activeColor, relief=tk.SOLID,
                            borderwidth=1,
                            text="Usuń", command=lambda: updateCombo(comboPD, "product", "productname", l, comboPE))
         button.grid(row=2, column=1)
@@ -286,7 +286,7 @@ class Main:
         ttk.Label(frame4a, text="Lokalizacja: ").grid(row=1, column=0)
         location = ttk.Entry(frame4a, textvariable=tk.StringVar())
         location.grid(row=1, column=1)
-        button = tk.Button(frame4a, width=8, background=menuColor, text="Dodaj", activebackground=acriveColor,
+        button = tk.Button(frame4a, width=8, background=menuColor, text="Dodaj", activebackground=activeColor,
                            relief=tk.SOLID,
                            borderwidth=1, command=lambda: insertLocalization(location))
         button.grid(row=2, column=1)
@@ -302,7 +302,7 @@ class Main:
         l3.sort()
         comboLE = ttk.Combobox(frame4b, state="readonly", value=l3)
         comboLE.grid(row=1, column=1)
-        button = tk.Button(frame4b, width=8, background=menuColor, activebackground=acriveColor, relief=tk.SOLID,
+        button = tk.Button(frame4b, width=8, background=menuColor, activebackground=activeColor, relief=tk.SOLID,
                            borderwidth=1,
                            text="Edytuj", command=lambda: editLocation.EditLocation(comboLE.get(), db))
         button.grid(row=2, column=1)
@@ -314,7 +314,7 @@ class Main:
         ttk.Label(frame4c, text="Lokalizacja: ").grid(row=1, column=0)
         comboLD = ttk.Combobox(frame4c, state="readonly", value=l3)
         comboLD.grid(row=1, column=1)
-        button = tk.Button(frame4c, width=8, background=menuColor, activebackground=acriveColor, text="Usuń",
+        button = tk.Button(frame4c, width=8, background=menuColor, activebackground=activeColor, text="Usuń",
                            relief=tk.SOLID,
                            borderwidth=1,
                            command=lambda: updateCombo(comboLD, "localizations", "localization", l3, comboLE))
@@ -335,7 +335,8 @@ class Main:
         ttk.Label(frame1, text="Ile ogłoszeń: ").grid(row=3, column=0)
         iterrations = ttk.Entry(frame1, textvariable=tk.IntVar(value=1))
         iterrations.grid(row=3, column=1, sticky="w")
-        runButton = tk.Button(frame1, background=menuColor, width=8, text="Uruchom", activebackground=acriveColor,
+        ttk.Label(frame1, text="TEST").grid(row=5, column=0)
+        runButton = tk.Button(frame1, background=menuColor, width=8, text="Uruchom", activebackground=activeColor,
                               relief=tk.SOLID, borderwidth=1,
                               command=lambda: chooseProducts.ChooseProducts(db, int(iterrations.get()), var1.get(),
                                                                             var2.get(),
@@ -344,6 +345,7 @@ class Main:
 
         root.grid_columnconfigure(1, weight=1)
         root.mainloop()
+
 
 if __name__ == "__main__":
     Main()
