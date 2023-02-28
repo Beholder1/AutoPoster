@@ -1,45 +1,32 @@
+import random
+import time
+
+import clipboard
 import selenium.common.exceptions
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from webdriver_manager.chrome import ChromeDriverManager
-import time
-import random
-import clipboard
-from tkinter import ttk
-import tkinter as tk
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 class MainScript:
-    def __init__(self, db, hide, email1, products, images):
+    def __init__(self, db, hide, email1, products, images, incognito):
+        PATH = "driver/chromedriver.exe"
         self.db = db
         option = Options()
         option.add_argument("--disable-infobars")
         option.add_argument("start-maximized")
         option.add_argument("--disable-extensions")
+        if incognito != 0:
+            option.add_argument("--incognito")
         # Pass the argument 1 to allow and 2 to block
         option.add_experimental_option("prefs", {
             "profile.default_content_setting_values.notifications": 2
         })
+        driver = webdriver.Chrome(chrome_options=option, executable_path=PATH)
 
-        root = tk.Tk()
-        root.geometry('300x120')
-        root.title('Pobieranie')
-        pb = ttk.Progressbar(root, orient='horizontal', mode='indeterminate', length=280)
-        pb.grid()
-
-        pb.start()
-        driver = webdriver.Chrome(ChromeDriverManager(path="driver").install(), chrome_options=option)
-        pb.stop()
-        root.mainloop()
-        time.sleep(10)
-        root.destroy()
-        time.sleep(10)
-
-        exit(0)
         # Logowanie
         driver.get("https://facebook.com")
         email = driver.find_element_by_id("email")
@@ -86,14 +73,14 @@ class MainScript:
             price = driver.find_element_by_xpath("//label[@aria-label='Cena']")
             price.send_keys(product[3])
 
-            # Kategoria WIP
+            # Kategoria
             kategoria = driver.find_element_by_xpath("//label[@aria-label='Kategoria']")
             kategoria.click()
             time.sleep(1)
             tools = driver.find_elements_by_xpath("//div[@role='button']")
             tools[len(tools) - 1 - (26 - category)].click()
 
-            # Stan WIP
+            # Stan
             time.sleep(5)
             stan = driver.find_element_by_xpath("//label[@aria-label='Stan']")
             stan.click()
@@ -137,9 +124,12 @@ class MainScript:
                 hideBeforeFriends = driver.find_elements_by_xpath("(//div[@role='switch'])[2]")
                 hideBeforeFriends[len(hideBeforeFriends) - 1].click()
 
-            # Dalej
-            next = driver.find_element_by_xpath("//div[@aria-label='Dalej']")
-            next.click()
+            try:
+                # Dalej
+                next = driver.find_element_by_xpath("//div[@aria-label='Dalej']")
+                next.click()
+            except selenium.common.exceptions.NoSuchElementException:
+                pass
 
             # Opublikuj
             time.sleep(5)
