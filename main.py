@@ -1,11 +1,11 @@
 import tkinter as tk
 from tkinter import ttk, filedialog
 
-import chooseProducts
-from db import Database
+import chooseAccounts
 import editAccount
-import editProduct
 import editLocation
+import editProduct
+from db import Database
 
 
 class Main:
@@ -44,7 +44,7 @@ class Main:
             combo.set('')
             editCombo.config(value=li)
             if table == "parts":
-                combo1.config(value=li)
+                numberOfAccounts.config(value=li)
 
         def expand():
             rep = root.after(2, expand)
@@ -331,18 +331,18 @@ class Main:
         ttk.Label(frame1, text="Jeden rodzaj: ").grid(row=2, column=0)
         var2 = tk.IntVar(value=1)
         ttk.Checkbutton(frame1, variable=var2).grid(row=2, column=1, sticky="w")
-        ttk.Label(frame1, text="Konto: ").grid(row=3, column=0)
-        combo1 = ttk.Combobox(frame1, state="readonly", value=l5)
+        ttk.Label(frame1, text="Ile kont: ").grid(row=3, column=0)
+        numberOfAccounts = ttk.Entry(frame1, textvariable=tk.IntVar(value=1))
         # combo1.current(0)
-        combo1.grid(row=3, column=1, sticky="w")
+        numberOfAccounts.grid(row=3, column=1, sticky="w")
         ttk.Label(frame1, text="Ile ogłoszeń: ").grid(row=4, column=0)
         iterrations = ttk.Entry(frame1, textvariable=tk.IntVar(value=1))
         iterrations.grid(row=4, column=1, sticky="w")
         runButton = tk.Button(frame1, background=menuColor, width=8, text="Uruchom", activebackground=activeColor,
                               relief=tk.SOLID, borderwidth=1,
-                              command=lambda: chooseProducts.ChooseProducts(db, int(iterrations.get()), var1.get(),
+                              command=lambda: chooseAccounts.ChooseAccounts(db, int(iterrations.get()), var1.get(),
                                                                             var2.get(),
-                                                                            combo1.get(), var3.get()))
+                                                                            int(numberOfAccounts.get()), var3.get()))
         runButton.grid(row=5, column=1, sticky="w")
 
         root.grid_columnconfigure(1, weight=1)

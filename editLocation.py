@@ -6,7 +6,8 @@ class EditLocation:
     def __init__(self, location, db):
         self.db = db
         root = tk.Tk()
-        self.location=location
+        self.location = location
+
         def updateLocation():
             self.db.update("localizations", "localization", entry1.get(), "localization", self.location)
             self.location = entry1.get()

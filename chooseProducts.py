@@ -1,17 +1,18 @@
 import tkinter as tk
 from tkinter import ttk
+
 import mainScript
 
 
 class ChooseProducts:
-    def __init__(self, db, numberOfProducts, hide, onlyOne, email, incognito):
+    def __init__(self, db, numberOfProducts, hide, onlyOne, accounts, incognito):
         self.db = db
         activeColor = "#FDA50F"
         menuColor = '#FD6A02'
 
-        def openScript(hide, email, products, images, incognito):
+        def openScript(hide, accounts, products, images, incognito):
             root.destroy()
-            mainScript.MainScript(self.db, hide, email, products, images, incognito)
+            mainScript.MainScript(self.db, hide, accounts, products, images, incognito)
 
         def on_select(event):
             numberOfImages['text'] = "Liczba zdjęć: " + str(self.db.countI(combo1.get()))
@@ -76,7 +77,8 @@ class ChooseProducts:
             return images
 
         button = tk.Button(frame, text="Uruchom", background=menuColor, activebackground=activeColor, relief=tk.SOLID,
-                           borderwidth=1, command=lambda: openScript(hide, email, productsGet(), imagesGet(), incognito))
+                           borderwidth=1,
+                           command=lambda: openScript(hide, accounts, productsGet(), imagesGet(), incognito))
         button.grid(row=numberOfProducts + 1, column=1)
 
         root.mainloop()
