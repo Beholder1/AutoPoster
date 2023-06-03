@@ -190,7 +190,7 @@ class Main:
         def addImage(frame, button):
             i = 4
             self.imageNames = filedialog.askopenfilenames(initialdir="/", title="Wybierz zdjęcia", filetypes=[
-                ("Obrazy", ".bmp .tif .tiff .png .gif .jpg .jpeg .jfif .pjpeg .pjp")])
+                ("Obrazy", ".bmp .tif .tiff .png .gif .jpg .jpeg .jfif .pjpeg .pjp .webp")])
             # for name in self.imageNames:
             #     button.grid(row=i+1, column=1)
             #     label = tk.Label(frame, text=name)
