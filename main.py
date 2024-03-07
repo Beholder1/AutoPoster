@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk, filedialog
 
 import chooseAccounts
+import chooseProducts
 import editAccount
 import editLocation
 import editProduct
@@ -335,15 +336,29 @@ class Main:
         numberOfAccounts = ttk.Entry(frame1, textvariable=tk.IntVar(value=1))
         # combo1.current(0)
         numberOfAccounts.grid(row=3, column=1, sticky="w")
-        ttk.Label(frame1, text="Ile ogłoszeń: ").grid(row=4, column=0)
+        ttk.Label(frame1, text="Wszystkie konta: ").grid(row=4, column=0)
+        var4 = tk.IntVar(value=0)
+        ttk.Checkbutton(frame1, variable=var4).grid(row=4, column=1, sticky="w")
+        ttk.Label(frame1, text="Ile ogłoszeń: ").grid(row=5, column=0)
         iterrations = ttk.Entry(frame1, textvariable=tk.IntVar(value=1))
-        iterrations.grid(row=4, column=1, sticky="w")
+        iterrations.grid(row=5, column=1, sticky="w")
+
+        def chooseNextStep(skipChoosingAccounts):
+            print(skipChoosingAccounts)
+            if skipChoosingAccounts == 1:
+                accounts=[]
+                for i in db.fetch("parts", "name"):
+                    accounts.append(i[0])
+                chooseProducts.ChooseProducts(db, int(iterrations.get()), var1.get(), var2.get(), accounts, var3.get())
+            else:
+                chooseAccounts.ChooseAccounts(db, int(iterrations.get()), var1.get(),
+                                              var2.get(),
+                                              int(numberOfAccounts.get()), var3.get())
+
         runButton = tk.Button(frame1, background=menuColor, width=8, text="Uruchom", activebackground=activeColor,
                               relief=tk.SOLID, borderwidth=1,
-                              command=lambda: chooseAccounts.ChooseAccounts(db, int(iterrations.get()), var1.get(),
-                                                                            var2.get(),
-                                                                            int(numberOfAccounts.get()), var3.get()))
-        runButton.grid(row=5, column=1, sticky="w")
+                              command=lambda: chooseNextStep(var4.get()))
+        runButton.grid(row=6, column=1, sticky="w")
 
         root.grid_columnconfigure(1, weight=1)
         root.mainloop()
