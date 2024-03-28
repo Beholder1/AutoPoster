@@ -9,7 +9,7 @@ class EditProduct:
         root.configure(background="white")
         root.title("Edytuj produkt")
         self.product = product
-        wholeProduct = db.getP(self.product)
+        wholeProduct = db.findProductByName(self.product)
         style = ttk.Style()
 
         def updateProduct():
@@ -24,7 +24,7 @@ class EditProduct:
             l1 = []
             for i in db.fetch("categories", "category"):
                 l1.append(i[0])
-            entry5 = ttk.Combobox(frame1, state="readonly", value=l1)
+            entry5 = ttk.Combobox(frame1, state="readonly", values=l1)
             entry5.grid(row=3 + self.counter, column=2)
             button1 = tk.Button(frame1, text="Dodaj")
             button1.configure(command=lambda: executeAdding(button1, entry5, label1))
@@ -33,17 +33,19 @@ class EditProduct:
 
         def executeAdding(button2, entry6, label2):
             addButton.grid_configure(row=4 + self.counter, column=3)
-            db.insertC(productId, db.getC(entry6.get()))
-            g = db.getC(entry6.get())
-            button2.configure(text="Edytuj", command=lambda: db.updateC(db.getC(entry6.get()), str(productId), str(g)))
+            db.saveCategoriesForProducts(productId, db.findCategory(entry6.get()))
+            g = db.findCategory(entry6.get())
+            button2.configure(text="Edytuj",
+                              command=lambda: db.updateC(db.findCategory(entry6.get()), str(productId), str(g)))
             button3 = tk.Button(frame1, text="Usuń")
             button3.configure(
-                command=lambda c=entry6.get(), b=button2, e=entry6, b1=button3, l=label2: executeDelete(db.getC(c), b,
-                                                                                                        e, b1, l))
+                command=lambda c=entry6.get(), b=button2, e=entry6, b1=button3, l=label2: executeDelete(
+                    db.findCategory(c), b,
+                    e, b1, l))
             button3.grid(row=3 + self.counter - 1, column=4)
 
         def executeDelete(categoryToDelete, buttonTD, entryTD, button1TD, labelTD):
-            db.removeC(str(productId), str(categoryToDelete))
+            db.deleteCategoriesForProductsById(str(productId), str(categoryToDelete))
             buttonTD.destroy()
             entryTD.destroy()
             button1TD.destroy()
@@ -93,7 +95,7 @@ class EditProduct:
         button.grid(row=3, column=3)
 
         productId = wholeProduct[0]
-        categories = db.getPC(productId)
+        categories = db.findAllProductCategoriesByProductId(productId)
         self.counter = 1
         for category in categories:
             label = ttk.Label(frame1, text="Kategoria " + str(self.counter) + ":", background="white",
@@ -102,10 +104,10 @@ class EditProduct:
             l1 = []
             for i in db.fetch("categories", "category"):
                 l1.append(i[0])
-            entry4 = ttk.Combobox(frame1, state="readonly", value=l1)
+            entry4 = ttk.Combobox(frame1, state="readonly", values=l1)
             entry4.grid(row=3 + self.counter, column=2)
             button = tk.Button(frame1, text="Edytuj",
-                               command=lambda c=category[0], e=entry4: db.updateC(db.getC(e.get()),
+                               command=lambda c=category[0], e=entry4: db.updateC(db.findCategory(e.get()),
                                                                                   str(productId), str(c)))
             button.grid(row=3 + self.counter, column=3)
             if self.counter != 1:

@@ -1,11 +1,13 @@
 import tkinter as tk
 from tkinter import ttk, filedialog
 
-import chooseAccounts
-import chooseProducts
+from tkfontawesome import icon_to_image
+
 import editAccount
 import editLocation
 import editProduct
+import homePage
+import refreshPage
 from db import Database
 
 
@@ -32,10 +34,10 @@ class Main:
         def raise_frame(frame):
             frame.tkraise()
 
-        def updateCombo(combo, table, column, li, editCombo):
+        def updateCombo(combo, table, column, editCombo):
             if table == "product":
-                db.removeImages(combo.get())
-                db.removeCategories(combo.get())
+                db.deleteAllImagesByProduct(combo.get())
+                db.deleteAllCategoriesForProductsByProduct(combo.get())
             db.remove(table, column, combo.get())
             li = []
             for i in db.fetch(table, column):
@@ -44,12 +46,10 @@ class Main:
             combo.config(value=li)
             combo.set('')
             editCombo.config(value=li)
-            if table == "parts":
-                numberOfAccounts.config(value=li)
 
         def expand():
             rep = root.after(2, expand)
-            if self.expanded == False:
+            if not self.expanded:
                 self.cur_width += 10
                 frame.config(width=self.cur_width)
             if self.cur_width >= max_w:
@@ -71,6 +71,8 @@ class Main:
                 menuButton.config(image=closeIcon, command=contract)
                 homeButton.config(image="", text="Strona główna", borderwidth=0)
                 homeButton.grid_configure(pady=0)
+                refreshButton.config(image="", text="Odświeżanie", borderwidth=0)
+                refreshButton.grid_configure(pady=0)
                 accountButton.config(image="", text="Konta", borderwidth=0)
                 accountButton.grid_configure(pady=0)
                 productButton.config(image="", text="Produkty", borderwidth=0)
@@ -81,6 +83,8 @@ class Main:
                 menuButton.config(image=menuIcon, command=expand)
                 homeButton.config(image=homeIcon, borderwidth=0)
                 homeButton.grid_configure(pady=5)
+                refreshButton.config(image=refreshIcon, borderwidth=0)
+                refreshButton.grid_configure(pady=5)
                 accountButton.config(image=accountIcon, borderwidth=0)
                 accountButton.grid_configure(pady=5)
                 productButton.config(image=productIcon, borderwidth=0)
@@ -88,44 +92,40 @@ class Main:
                 locationButton.config(image=locationIcon, borderwidth=0)
                 locationButton.grid_configure(pady=5)
 
-        menuIcon = tk.PhotoImage(file='icons/menu.png')
-        closeIcon = tk.PhotoImage(file='icons/close.png')
-        homeIcon = tk.PhotoImage(file='icons/home.png')
-        accountIcon = tk.PhotoImage(file='icons/account.png')
-        productIcon = tk.PhotoImage(file='icons/product.png')
-        locationIcon = tk.PhotoImage(file='icons/location.png')
+        menuIcon = icon_to_image("bars", scale_to_height=24)
+        closeIcon = icon_to_image("times", scale_to_height=24)
+        homeIcon = icon_to_image("home", scale_to_height=24)
+        refreshIcon = icon_to_image("sync-alt", scale_to_height=24)
+        accountIcon = icon_to_image("user", scale_to_height=24)
+        productIcon = icon_to_image("box", scale_to_height=24)
+        locationIcon = icon_to_image("map-marker-alt", scale_to_height=24)
 
         frame = tk.Frame(root, bg=menuColor, width=50, height=root.winfo_height())
         frame.grid(row=0, column=0, sticky='nws')
 
-        menuButton = tk.Button(
-            frame,
-            image=menuIcon,
-            background=menuColor,
-            fg=fontColor,
-            relief=tk.SUNKEN,
-            borderwidth=0,
-            activebackground=menuColor,
-            command=lambda: expand()
-        )
+        menuButton = tk.Button(frame, image=menuIcon, background=menuColor, fg=fontColor, relief=tk.SUNKEN,
+                               borderwidth=0, activebackground=menuColor, command=lambda: expand())
         menuButton.grid(row=1, column=0, pady=5, padx=(10, 10), sticky='nw')
         homeButton = tk.Button(frame, image=homeIcon, background=menuColor, fg=fontColor,
-                               font=('MS Reference Sans Serif', 13),
-                               relief=tk.SUNKEN, borderwidth=0, activebackground=menuColor,
-                               command=lambda: raise_frame(frame1))
+                               font=('MS Reference Sans Serif', 13), relief=tk.SUNKEN, borderwidth=0,
+                               activebackground=menuColor, command=lambda: raise_frame(homeFrame))
         homeButton.grid(row=2, column=0, pady=5, sticky='nwe')
+        refreshButton = tk.Button(frame, image=refreshIcon, background=menuColor, fg=fontColor,
+                                  font=('MS Reference Sans Serif', 13), relief=tk.SUNKEN, borderwidth=0,
+                                  activebackground=menuColor, command=lambda: raise_frame(refreshFrame))
+        refreshButton.grid(row=3, column=0, pady=5, sticky='nwe')
         accountButton = tk.Button(frame, image=accountIcon, background=menuColor, fg=fontColor,
                                   font=('MS Reference Sans Serif', 13), relief=tk.SUNKEN, borderwidth=0,
                                   activebackground=menuColor, command=lambda: raise_frame(frame2))
-        accountButton.grid(row=3, column=0, pady=5, sticky='nwe')
+        accountButton.grid(row=4, column=0, pady=5, sticky='nwe')
         productButton = tk.Button(frame, image=productIcon, background=menuColor, fg=fontColor,
                                   font=('MS Reference Sans Serif', 13), relief=tk.SUNKEN, borderwidth=0,
                                   activebackground=menuColor, command=lambda: raise_frame(frame3))
-        productButton.grid(row=4, column=0, pady=5, sticky='nwe')
+        productButton.grid(row=5, column=0, pady=5, sticky='nwe')
         locationButton = tk.Button(frame, image=locationIcon, background=menuColor, fg=fontColor,
                                    font=('MS Reference Sans Serif', 13), relief=tk.SUNKEN, borderwidth=0,
                                    activebackground=menuColor, command=lambda: raise_frame(frame4))
-        locationButton.grid(row=5, column=0, pady=5, sticky='nwe')
+        locationButton.grid(row=6, column=0, pady=5, sticky='nwe')
 
         # frame.bind('<Enter>',lambda e: expand())
         # frame.bind('<Leave>',lambda e: contract())
@@ -163,7 +163,7 @@ class Main:
         for i in db.fetch("parts", "name"):
             l5.append(i[0])
         l5.sort()
-        comboAE = ttk.Combobox(frame2b, state="readonly", value=l5)
+        comboAE = ttk.Combobox(frame2b, state="readonly", values=l5)
         comboAE.grid(row=1, column=1)
         button = tk.Button(frame2b, width=8, background=menuColor, activebackground=activeColor, relief=tk.SOLID,
                            borderwidth=1,
@@ -175,11 +175,11 @@ class Main:
         frame2c.grid(row=2, column=0, pady=5, padx=5)
         ttk.Label(frame2c, text="Usuń", foreground=menuColor).grid(row=0, column=0, sticky="w")
         ttk.Label(frame2c, text="Nazwa: ").grid(row=1, column=0)
-        comboAD = ttk.Combobox(frame2c, state="readonly", value=l5)
+        comboAD = ttk.Combobox(frame2c, state="readonly", values=l5)
         comboAD.grid(row=1, column=1)
         button = tk.Button(frame2c, width=8, background=menuColor, activebackground=activeColor, relief=tk.SOLID,
                            borderwidth=1,
-                           text="Usuń", command=lambda: updateCombo(comboAD, "parts", "name", l5, comboAE))
+                           text="Usuń", command=lambda: updateCombo(comboAD, "parts", "name", comboAE))
         button.grid(row=2, column=1)
 
         frame3 = tk.Frame(root, bg=bgColor, borderwidth=1, relief=tk.RIDGE)
@@ -201,11 +201,11 @@ class Main:
             #     i+=1
 
         def addProduct(product, title, price, desc, category):
-            db.insertP(product, title, price, desc)
-            p = db.getP(product)[0]
-            db.insertC(p, category)
+            db.saveProduct(product, title, price, desc)
+            p = db.findProductByName(product)[0]
+            db.saveCategoriesForProducts(p, category)
             for name in self.imageNames:
-                db.insertI(name, p)
+                db.saveImage(name, p)
 
         frame3a = tk.Frame(frame3, bg="white", relief=tk.RIDGE, borderwidth=1)
         frame3a.grid(row=0, column=0, pady=5, padx=5)
@@ -231,7 +231,7 @@ class Main:
         l1 = []
         for i in db.fetch("categories", "category"):
             l1.append(i[0])
-        comboC = ttk.Combobox(frame3a, state="readonly", value=l1)
+        comboC = ttk.Combobox(frame3a, state="readonly", values=l1)
         comboC.grid(row=5, column=1)
         ttk.Label(frame3a, text="Zdjęcia: ").grid(row=6, column=0)
         images = tk.Button(frame3a, width=8, background=menuColor, text="Wybierz", relief=tk.SOLID, borderwidth=1,
@@ -240,7 +240,7 @@ class Main:
         button = tk.Button(frame3a, width=8, background=menuColor, text="Dodaj", relief=tk.SOLID, borderwidth=1,
                            activebackground=activeColor,
                            command=lambda: addProduct(product.get(), title.get(), price.get(), desc.get(),
-                                                      db.getC(comboC.get())))
+                                                      db.findCategory(comboC.get())))
         button.grid(row=7, column=1)
 
         # EDYTUJ
@@ -253,7 +253,7 @@ class Main:
         for i in db.fetch("product", "productName"):
             l.append(i[0])
         l.sort()
-        comboPE = ttk.Combobox(frame3b, state="readonly", value=l)
+        comboPE = ttk.Combobox(frame3b, state="readonly", values=l)
         comboPE.grid(row=1, column=1)
         button = tk.Button(frame3b, width=8, background=menuColor, activebackground=activeColor, relief=tk.SOLID,
                            borderwidth=1,
@@ -266,11 +266,11 @@ class Main:
         frame3c.grid_propagate(False)
         ttk.Label(frame3c, text="Usuń", foreground=menuColor).grid(row=0, column=0, sticky="w")
         ttk.Label(frame3c, text="Produkt: ").grid(row=1, column=0)
-        comboPD = ttk.Combobox(frame3c, state="readonly", value=l)
+        comboPD = ttk.Combobox(frame3c, state="readonly", values=l)
         comboPD.grid(row=1, column=1)
         button = tk.Button(frame3c, width=8, background=menuColor, activebackground=activeColor, relief=tk.SOLID,
                            borderwidth=1,
-                           text="Usuń", command=lambda: updateCombo(comboPD, "product", "productname", l, comboPE))
+                           text="Usuń", command=lambda: updateCombo(comboPD, "product", "productname", comboPE))
         button.grid(row=2, column=1)
 
         frame4 = tk.Frame(root, bg=bgColor, borderwidth=1, relief=tk.RIDGE)
@@ -278,7 +278,7 @@ class Main:
 
         # DODAJ
         def insertLocalization(location):
-            db.insertL(location.get())
+            db.saveLocation(location.get())
 
         frame4a = tk.Frame(frame4, width=253, height=70, bg="white", relief=tk.RIDGE, borderwidth=1)
         frame4a.grid_propagate(False)
@@ -301,7 +301,7 @@ class Main:
         for i in db.fetch("localizations", "localization"):
             l3.append(i[0])
         l3.sort()
-        comboLE = ttk.Combobox(frame4b, state="readonly", value=l3)
+        comboLE = ttk.Combobox(frame4b, state="readonly", values=l3)
         comboLE.grid(row=1, column=1)
         button = tk.Button(frame4b, width=8, background=menuColor, activebackground=activeColor, relief=tk.SOLID,
                            borderwidth=1,
@@ -313,52 +313,16 @@ class Main:
         frame4c.grid(row=2, column=0, pady=5, padx=5)
         ttk.Label(frame4c, text="Usuń", foreground=menuColor).grid(row=0, column=0, sticky="w")
         ttk.Label(frame4c, text="Lokalizacja: ").grid(row=1, column=0)
-        comboLD = ttk.Combobox(frame4c, state="readonly", value=l3)
+        comboLD = ttk.Combobox(frame4c, state="readonly", values=l3)
         comboLD.grid(row=1, column=1)
         button = tk.Button(frame4c, width=8, background=menuColor, activebackground=activeColor, text="Usuń",
                            relief=tk.SOLID,
                            borderwidth=1,
-                           command=lambda: updateCombo(comboLD, "localizations", "localization", l3, comboLE))
+                           command=lambda: updateCombo(comboLD, "localizations", "localization", comboLE))
         button.grid(row=2, column=1)
 
-        frame1 = tk.Frame(root, bg=bgColor, borderwidth=1, relief=tk.RIDGE)
-        frame1.grid(row=0, column=1, sticky="nwse")
-        ttk.Label(frame1, text="Ukryj: ").grid(row=0, column=0)
-        var1 = tk.IntVar(value=1)
-        ttk.Checkbutton(frame1, variable=var1).grid(row=0, column=1, sticky="w")
-        ttk.Label(frame1, text="Incognito: ").grid(row=1, column=0)
-        var3 = tk.IntVar(value=1)
-        ttk.Checkbutton(frame1, variable=var3).grid(row=1, column=1, sticky="w")
-        ttk.Label(frame1, text="Jeden rodzaj: ").grid(row=2, column=0)
-        var2 = tk.IntVar(value=1)
-        ttk.Checkbutton(frame1, variable=var2).grid(row=2, column=1, sticky="w")
-        ttk.Label(frame1, text="Ile kont: ").grid(row=3, column=0)
-        numberOfAccounts = ttk.Entry(frame1, textvariable=tk.IntVar(value=1))
-        # combo1.current(0)
-        numberOfAccounts.grid(row=3, column=1, sticky="w")
-        ttk.Label(frame1, text="Wszystkie konta: ").grid(row=4, column=0)
-        var4 = tk.IntVar(value=0)
-        ttk.Checkbutton(frame1, variable=var4).grid(row=4, column=1, sticky="w")
-        ttk.Label(frame1, text="Ile ogłoszeń: ").grid(row=5, column=0)
-        iterrations = ttk.Entry(frame1, textvariable=tk.IntVar(value=1))
-        iterrations.grid(row=5, column=1, sticky="w")
-
-        def chooseNextStep(skipChoosingAccounts):
-            print(skipChoosingAccounts)
-            if skipChoosingAccounts == 1:
-                accounts=[]
-                for i in db.fetch("parts", "name"):
-                    accounts.append(i[0])
-                chooseProducts.ChooseProducts(db, int(iterrations.get()), var1.get(), var2.get(), accounts, var3.get())
-            else:
-                chooseAccounts.ChooseAccounts(db, int(iterrations.get()), var1.get(),
-                                              var2.get(),
-                                              int(numberOfAccounts.get()), var3.get())
-
-        runButton = tk.Button(frame1, background=menuColor, width=8, text="Uruchom", activebackground=activeColor,
-                              relief=tk.SOLID, borderwidth=1,
-                              command=lambda: chooseNextStep(var4.get()))
-        runButton.grid(row=6, column=1, sticky="w")
+        refreshFrame = refreshPage.RefreshPage(root, db, bgColor, menuColor, activeColor).getPage()
+        homeFrame = homePage.HomePage(root, db, bgColor, menuColor, activeColor).getPage()
 
         root.grid_columnconfigure(1, weight=1)
         root.mainloop()

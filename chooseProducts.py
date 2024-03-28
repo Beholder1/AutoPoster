@@ -15,7 +15,7 @@ class ChooseProducts:
             mainScript.MainScript(self.db, hide, accounts, products, images, incognito)
 
         def on_select(event):
-            numberOfImages['text'] = "Liczba zdjęć: " + str(self.db.countI(combo1.get()))
+            numberOfImages['text'] = "Liczba zdjęć: " + str(self.db.countAllImagesByProduct(combo1.get()))
 
         root = tk.Tk()
 
@@ -33,7 +33,7 @@ class ChooseProducts:
             while i <= numberOfProducts:
                 count = "Produkt " + str(i) + ": "
                 ttk.Label(frame, text=count).grid(row=i, column=0)
-                combo = ttk.Combobox(frame, state="readonly", value=l)
+                combo = ttk.Combobox(frame, state="readonly", values=l)
                 combo.grid(row=i, column=1)
                 combos.append(combo)
                 image = tk.Entry(frame)
@@ -45,7 +45,7 @@ class ChooseProducts:
                 row=0, column=0)
             numberOfImages = ttk.Label(frame, background="#FCFCFF", foreground="black", font=('Verdana', 12))
             numberOfImages.grid(row=0, column=2)
-            combo1 = ttk.Combobox(frame, state="readonly", value=l)
+            combo1 = ttk.Combobox(frame, state="readonly", values=l)
             combo1.grid(row=0, column=1)
             combo1.bind('<<ComboboxSelected>>', on_select)
 

@@ -41,19 +41,18 @@ class Database:
         self.cur.execute("DELETE FROM " + table + " WHERE " + column + " = ?", (criterion,))
         self.conn.commit()
 
-    def removeC(self, productId, categoryId):
-        print(productId + categoryId)
+    def deleteCategoriesForProductsById(self, productId, categoryId):
         self.cur.execute("DELETE FROM categoriesForProducts WHERE product = ? AND category = ?",
                          (productId, categoryId,))
         self.conn.commit()
 
-    def removeImages(self, product):
-        id = self.getP(product)[0]
+    def deleteAllImagesByProduct(self, product):
+        id = self.findProductByName(product)[0]
         self.cur.execute("DELETE FROM photos WHERE product = ?", (id,))
         self.conn.commit()
 
-    def removeCategories(self, product):
-        id = self.getP(product)[0]
+    def deleteAllCategoriesForProductsByProduct(self, product):
+        id = self.findProductByName(product)[0]
         self.cur.execute("DELETE FROM categoriesForProducts WHERE product = ?", (id,))
         self.conn.commit()
 
@@ -75,56 +74,56 @@ class Database:
                          (newCategory, productId, categoryId,))
         self.conn.commit()
 
-    def insertL(self, localization):
-        self.cur.execute("INSERT INTO localizations VALUES (NULL, ?)", (localization,))
+    def saveLocation(self, location):
+        self.cur.execute("INSERT INTO localizations VALUES (NULL, ?)", (location,))
         self.conn.commit()
 
-    def getL(self, id):
+    def findLocationById(self, id):
         self.cur.execute("SELECT localization FROM localizations WHERE id = ?", (id,))
         data = self.cur.fetchone()
         return data[0]
 
-    def getNumberL(self):
+    def countAllLocations(self):
         self.cur.execute("SELECT COUNT(*) FROM localizations")
         data = self.cur.fetchone()
         return data[0]
 
-    def insertP(self, productName, title, price, description):
+    def saveProduct(self, productName, title, price, description):
         self.cur.execute("INSERT INTO product VALUES (NULL, ?, ?, ?, ?)",
                          (productName, title, price, description))
         self.conn.commit()
 
-    def getP(self, productName):
+    def findProductByName(self, productName):
         self.cur.execute("SELECT * FROM product WHERE productName = ?", (productName,))
         data = self.cur.fetchone()
         return data
 
-    def getPC(self, productId):
+    def findAllProductCategoriesByProductId(self, productId):
         self.cur.execute("SELECT category FROM categoriesForProducts WHERE product = ?", (productId,))
         data = self.cur.fetchall()
         return data
 
-    def getC(self, category):
+    def findCategory(self, category):
         self.cur.execute("SELECT id FROM categories WHERE category = ?", (category,))
         id = self.cur.fetchall()
         return id[0][0]
 
-    def insertC(self, product, category):
+    def saveCategoriesForProducts(self, product, category):
         self.cur.execute("INSERT INTO categoriesForProducts VALUES (NULL, ?, ?)", (product, category,))
         self.conn.commit()
 
-    def insertI(self, path, product):
+    def saveImage(self, path, product):
         self.cur.execute("INSERT INTO photos VALUES (NULL, ?, ?)", (path, product,))
         self.conn.commit()
 
-    def fetchI(self, product):
-        id = self.getP(product)[0]
+    def findAllImagesByProduct(self, product):
+        id = self.findProductByName(product)[0]
         self.cur.execute("SELECT path FROM photos WHERE product = ?", (id,))
         images = self.cur.fetchall()
         return images
 
-    def countI(self, productName):
-        product = self.getP(productName)
+    def countAllImagesByProduct(self, productName):
+        product = self.findProductByName(productName)
         self.cur.execute("SELECT COUNT(*) FROM photos WHERE product = ?", (product[0],))
         numberOfImages = self.cur.fetchall()
         return numberOfImages[0][0]
