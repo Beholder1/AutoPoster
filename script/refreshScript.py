@@ -40,11 +40,15 @@ class RefreshScript:
                 password.send_keys(self.db.getA("password", account))
                 password.send_keys(Keys.ENTER)
                 time.sleep(4)
-                driver.get("https://www.facebook.com/marketplace/selling/renew_listings/?is_routable_dialog=true")
-                refreshButtons = WebDriverWait(driver, 60).until(
+                driver.get("https://www.facebook.com/marketplace/selling/renew_listings")
+                while True:
+                    refreshButtons = WebDriverWait(driver, 60).until(
                         ec.presence_of_all_elements_located((By.XPATH, "(//div[@aria-label='Odnów'])")))
-                for refreshButton in refreshButtons:
-                    refreshButton.click()
+                    if len(refreshButtons) == 0:
+                        break
+                    for refreshButton in refreshButtons:
+                        refreshButton.click()
+                    driver.refresh()
                 driver.quit()
             except BaseException as e:
                 driver.quit()

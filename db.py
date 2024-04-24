@@ -1,8 +1,23 @@
 import sqlite3
+# import psycopg
 
 
 class Database:
     def __init__(self, db):
+        # hostname = ''
+        # database = ''
+        # username = ''
+        # password = ''
+        # port =
+        #
+        # self.conn = psycopg.connect(
+        #     host=hostname,
+        #     dbname=database,
+        #     user=username,
+        #     password=password,
+        #     port=port)
+        # self.cur = self.conn.cursor()
+
         self.conn = sqlite3.connect(db)
         self.cur = self.conn.cursor()
         self.cur.execute(

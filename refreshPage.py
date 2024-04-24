@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 
 import chooseAccounts
-import refreshScript
+from script import refreshScript
 
 
 class RefreshPage:

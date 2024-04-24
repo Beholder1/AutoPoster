@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 
 import chooseProducts
-import refreshScript
+from script import refreshScript
 
 
 class ChooseAccounts:
