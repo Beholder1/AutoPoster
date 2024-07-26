@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, filedialog
 
-from tkfontawesome import icon_to_image
+# from tkfontawesome import icon_to_image
 
 import editAccount
 import editLocation
@@ -26,9 +26,6 @@ class Main:
         style = ttk.Style()
         style.configure('TLabel', background="white", foreground=fontColor, font=('Verdana', 12))
         style.configure('TCheckbutton', background="white")
-        min_w = 50
-        max_w = 150
-        self.cur_width = min_w
         self.expanded = False
 
         def raise_frame(frame):
@@ -46,83 +43,28 @@ class Main:
             combo.config(value=li)
             combo.set('')
             editCombo.config(value=li)
+            # locationButton.grid_configure(pady=0)
 
-        def expand():
-            rep = root.after(2, expand)
-            if not self.expanded:
-                self.cur_width += 10
-                frame.config(width=self.cur_width)
-            if self.cur_width >= max_w:
-                self.expanded = True
-                root.after_cancel(rep)
-                fill()
-
-        def contract():
-            self.cur_width -= 10
-            rep = root.after(2, contract)
-            frame.config(width=self.cur_width)
-            if self.cur_width <= min_w:
-                self.expanded = False
-                root.after_cancel(rep)
-                fill()
-
-        def fill():
-            if self.expanded:
-                menuButton.config(image=closeIcon, command=contract)
-                homeButton.config(image="", text="Strona główna", borderwidth=0)
-                homeButton.grid_configure(pady=0)
-                refreshButton.config(image="", text="Odświeżanie", borderwidth=0)
-                refreshButton.grid_configure(pady=0)
-                accountButton.config(image="", text="Konta", borderwidth=0)
-                accountButton.grid_configure(pady=0)
-                productButton.config(image="", text="Produkty", borderwidth=0)
-                productButton.grid_configure(pady=0)
-                locationButton.config(image="", text="Lokalizacje", borderwidth=0)
-                locationButton.grid_configure(pady=0)
-            else:
-                menuButton.config(image=menuIcon, command=expand)
-                homeButton.config(image=homeIcon, borderwidth=0)
-                homeButton.grid_configure(pady=5)
-                refreshButton.config(image=refreshIcon, borderwidth=0)
-                refreshButton.grid_configure(pady=5)
-                accountButton.config(image=accountIcon, borderwidth=0)
-                accountButton.grid_configure(pady=5)
-                productButton.config(image=productIcon, borderwidth=0)
-                productButton.grid_configure(pady=5)
-                locationButton.config(image=locationIcon, borderwidth=0)
-                locationButton.grid_configure(pady=5)
-
-        menuIcon = icon_to_image("bars", scale_to_height=24)
-        closeIcon = icon_to_image("times", scale_to_height=24)
-        homeIcon = icon_to_image("home", scale_to_height=24)
-        refreshIcon = icon_to_image("sync-alt", scale_to_height=24)
-        accountIcon = icon_to_image("user", scale_to_height=24)
-        productIcon = icon_to_image("box", scale_to_height=24)
-        locationIcon = icon_to_image("map-marker-alt", scale_to_height=24)
-
-        frame = tk.Frame(root, bg=menuColor, width=50, height=root.winfo_height())
+        frame = tk.Frame(root, bg=menuColor, width=150, height=root.winfo_height())
         frame.grid(row=0, column=0, sticky='nws')
 
-        menuButton = tk.Button(frame, image=menuIcon, background=menuColor, fg=fontColor, relief=tk.SUNKEN,
-                               borderwidth=0, activebackground=menuColor, command=lambda: expand())
-        menuButton.grid(row=1, column=0, pady=5, padx=(10, 10), sticky='nw')
-        homeButton = tk.Button(frame, image=homeIcon, background=menuColor, fg=fontColor,
+        homeButton = tk.Button(frame, text="Strona główna", background=menuColor, fg=fontColor,
                                font=('MS Reference Sans Serif', 13), relief=tk.SUNKEN, borderwidth=0,
                                activebackground=menuColor, command=lambda: raise_frame(homeFrame))
         homeButton.grid(row=2, column=0, pady=5, sticky='nwe')
-        refreshButton = tk.Button(frame, image=refreshIcon, background=menuColor, fg=fontColor,
+        refreshButton = tk.Button(frame, text="Odświeżanie", background=menuColor, fg=fontColor,
                                   font=('MS Reference Sans Serif', 13), relief=tk.SUNKEN, borderwidth=0,
                                   activebackground=menuColor, command=lambda: raise_frame(refreshFrame))
         refreshButton.grid(row=3, column=0, pady=5, sticky='nwe')
-        accountButton = tk.Button(frame, image=accountIcon, background=menuColor, fg=fontColor,
+        accountButton = tk.Button(frame, text="Konta", background=menuColor, fg=fontColor,
                                   font=('MS Reference Sans Serif', 13), relief=tk.SUNKEN, borderwidth=0,
                                   activebackground=menuColor, command=lambda: raise_frame(frame2))
         accountButton.grid(row=4, column=0, pady=5, sticky='nwe')
-        productButton = tk.Button(frame, image=productIcon, background=menuColor, fg=fontColor,
+        productButton = tk.Button(frame, text="Produkty", background=menuColor, fg=fontColor,
                                   font=('MS Reference Sans Serif', 13), relief=tk.SUNKEN, borderwidth=0,
                                   activebackground=menuColor, command=lambda: raise_frame(frame3))
         productButton.grid(row=5, column=0, pady=5, sticky='nwe')
-        locationButton = tk.Button(frame, image=locationIcon, background=menuColor, fg=fontColor,
+        locationButton = tk.Button(frame, text="Lokalizacje", background=menuColor, fg=fontColor,
                                    font=('MS Reference Sans Serif', 13), relief=tk.SUNKEN, borderwidth=0,
                                    activebackground=menuColor, command=lambda: raise_frame(frame4))
         locationButton.grid(row=6, column=0, pady=5, sticky='nwe')

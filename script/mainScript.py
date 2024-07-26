@@ -4,20 +4,18 @@ import time
 import clipboard
 import selenium.common.exceptions
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
+from selenium.webdriver import ChromeOptions
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
-from webdriver_manager.chrome import ChromeDriverManager
 
 
 class MainScript:
     def __init__(self, db, hide, accounts, products, images, incognito):
         PATH = "driver/chromedriver.exe"
         self.db = db
-        option = Options()
+        option = ChromeOptions()
         option.add_argument("--disable-infobars")
         option.add_argument("start-maximized")
         option.add_argument("--disable-extensions")
@@ -32,7 +30,7 @@ class MainScript:
 
         accountsWithErrors = []
         for account in accounts:
-            driver = webdriver.Chrome(options=option, service=Service(ChromeDriverManager().install()))
+            driver = webdriver.Chrome(options=option)
             try:
                 random.shuffle(products)
 

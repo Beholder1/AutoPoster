@@ -2,12 +2,10 @@ import random
 import time
 
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
+from selenium.webdriver import ChromeOptions
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.wait import WebDriverWait
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support import expected_conditions as ec
 
 
@@ -15,7 +13,7 @@ class RefreshScript:
     def __init__(self, db, accounts, incognito):
         PATH = "driver/chromedriver.exe"
         self.db = db
-        option = Options()
+        option = ChromeOptions()
         option.add_argument("--disable-infobars")
         option.add_argument("start-maximized")
         option.add_argument("--disable-extensions")
@@ -30,7 +28,7 @@ class RefreshScript:
 
         accountsWithErrors = []
         for account in accounts:
-            driver = webdriver.Chrome(options=option, service=Service(ChromeDriverManager().install()))
+            driver = webdriver.Chrome(options=option)
             try:
                 # Logowanie
                 driver.get("https://facebook.com")
