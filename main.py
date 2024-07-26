@@ -1,8 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, filedialog
 
-# from tkfontawesome import icon_to_image
-
 import editAccount
 import editLocation
 import editProduct
@@ -43,7 +41,6 @@ class Main:
             combo.config(value=li)
             combo.set('')
             editCombo.config(value=li)
-            # locationButton.grid_configure(pady=0)
 
         frame = tk.Frame(root, bg=menuColor, width=150, height=root.winfo_height())
         frame.grid(row=0, column=0, sticky='nws')
