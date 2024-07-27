@@ -5,22 +5,22 @@ from selenium import webdriver
 from selenium.webdriver import ChromeOptions
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
+from selenium.webdriver.support.wait import WebDriverWait
 
 
 class RefreshScript:
-    def __init__(self, db, accounts, incognito):
-        PATH = "driver/chromedriver.exe"
+    def __init__(self, db, accounts, incognito, refresh):
         self.db = db
-        option = ChromeOptions()
-        option.add_argument("--disable-infobars")
-        option.add_argument("start-maximized")
-        option.add_argument("--disable-extensions")
+        options = ChromeOptions()
+        options.add_argument("--disable-infobars")
+        options.add_argument("start-maximized")
+        options.add_argument("--disable-extensions")
+        options.add_argument("--disable-search-engine-choice-screen")
         if incognito != 0:
-            option.add_argument("--incognito")
+            options.add_argument("--incognito")
         # Pass the argument 1 to allow and 2 to block
-        option.add_experimental_option("prefs", {
+        options.add_experimental_option("prefs", {
             "profile.default_content_setting_values.notifications": 2
         })
 
@@ -28,7 +28,7 @@ class RefreshScript:
 
         accountsWithErrors = []
         for account in accounts:
-            driver = webdriver.Chrome(options=option)
+            driver = webdriver.Chrome(options=options)
             try:
                 # Logowanie
                 driver.get("https://facebook.com")
@@ -46,6 +46,8 @@ class RefreshScript:
                         break
                     for refreshButton in refreshButtons:
                         refreshButton.click()
+                    if not refresh:
+                        break
                     driver.refresh()
                 driver.quit()
             except BaseException as e:

@@ -13,16 +13,16 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 class MainScript:
     def __init__(self, db, hide, accounts, products, images, incognito):
-        PATH = "driver/chromedriver.exe"
         self.db = db
-        option = ChromeOptions()
-        option.add_argument("--disable-infobars")
-        option.add_argument("start-maximized")
-        option.add_argument("--disable-extensions")
+        options = ChromeOptions()
+        options.add_argument("--disable-infobars")
+        options.add_argument("start-maximized")
+        options.add_argument("--disable-extensions")
+        options.add_argument("--disable-search-engine-choice-screen")
         if incognito != 0:
-            option.add_argument("--incognito")
+            options.add_argument("--incognito")
         # Pass the argument 1 to allow and 2 to block
-        option.add_experimental_option("prefs", {
+        options.add_experimental_option("prefs", {
             "profile.default_content_setting_values.notifications": 2
         })
 
@@ -30,7 +30,7 @@ class MainScript:
 
         accountsWithErrors = []
         for account in accounts:
-            driver = webdriver.Chrome(options=option)
+            driver = webdriver.Chrome(options=options)
             try:
                 random.shuffle(products)
 

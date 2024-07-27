@@ -53,14 +53,14 @@ class ChooseAccounts:
 
 
 class ChooseAccountsForRefresh:
-    def __init__(self, db, numberOfAccounts, incognito):
+    def __init__(self, db, numberOfAccounts, incognito, refresh):
         self.db = db
         activeColor = "#FDA50F"
         menuColor = '#FD6A02'
 
-        def openScript(accounts, incognito):
+        def openScript(accounts, incognito, refresh):
             root.destroy()
-            refreshScript.RefreshScript(self.db, accounts, incognito)
+            refreshScript.RefreshScript(self.db, accounts, incognito, refresh)
 
         root = tk.Tk()
 
@@ -89,7 +89,7 @@ class ChooseAccountsForRefresh:
             return accounts
 
         button = tk.Button(frame, text="Uruchom", background=menuColor, activebackground=activeColor, relief=tk.SOLID,
-                           borderwidth=1, command=lambda: openScript(accountsGet(), incognito))
+                           borderwidth=1, command=lambda: openScript(accountsGet(), incognito, refresh))
         button.grid(row=numberOfAccounts + 1, column=1)
 
         root.mainloop()
