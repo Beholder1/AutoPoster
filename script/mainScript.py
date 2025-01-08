@@ -37,9 +37,12 @@ class MainScript:
                 # Logowanie
                 driver.get("https://facebook.com")
                 email = driver.find_element(By.ID, "email")
+                time.sleep(random.uniform(2, 5))
                 email.send_keys(self.db.getA("email", account))
                 password = driver.find_element(By.ID, "pass")
+                time.sleep(random.uniform(2, 5))
                 password.send_keys(self.db.getA("password", account))
+                time.sleep(random.uniform(2, 5))
                 password.send_keys(Keys.ENTER)
                 time.sleep(4)
                 counter = 0
