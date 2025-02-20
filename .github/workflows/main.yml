@@ -32,7 +32,7 @@ jobs:
         move dist\main.exe dist-archive\main.exe
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: main-executable
         path: dist-archive/main.exe
