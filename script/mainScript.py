@@ -58,13 +58,18 @@ class MainScript:
                     driver.get("https://www.facebook.com/marketplace/create/item")
                     time.sleep(4)
 
+                    #Zapamiętaj
+                    remember = WebDriverWait(driver, 10).until(
+                        ec.presence_of_element_located((By.XPATH, "//div[@aria-label='Zamknij']")))
+                    remember.click()
+
                     # Zdjęcia
                     images1 = self.db.findAllImagesByProduct(product1)
                     images2 = []
                     for image in images[counter]:
                         images2.append(images1[int(image) - 1])
                     counter += 1
-                    photos = WebDriverWait(driver, 10).until(
+                    photos = WebDriverWait(driver, 2).until(
                         ec.presence_of_element_located((By.XPATH, "//input[@accept='image/*,image/heif,image/heic']")))
                     paths = ""
                     for image in images2:
@@ -74,17 +79,16 @@ class MainScript:
                     photos.send_keys(paths)
 
                     # Tytuł
-                    title = driver.find_element(By.XPATH, "//label[@aria-label='Tytuł']")
+                    inputs = driver.find_elements(By.TAG_NAME, "input")
                     clipboard.copy(product[2])
-                    title.send_keys(Keys.CONTROL + "v")
+                    inputs[5].send_keys(Keys.CONTROL + "v")
                     # title.send_keys(product[2])
 
                     # Cena
-                    price = driver.find_element(By.XPATH, "//label[@aria-label='Cena']")
-                    price.send_keys(product[3])
+                    inputs[6].send_keys(product[3])
 
                     # Kategoria
-                    kategoria = driver.find_element(By.XPATH, "//label[@aria-label='Kategoria']")
+                    kategoria = driver.find_element(By.XPATH, "//label[@role='button']")
                     kategoria.click()
                     time.sleep(1)
                     tools = driver.find_elements(By.XPATH, "//div[@role='button']")
@@ -92,7 +96,7 @@ class MainScript:
 
                     # Stan
                     time.sleep(5)
-                    stan = driver.find_element(By.XPATH, "//label[@aria-label='Stan']")
+                    stan = driver.find_element(By.XPATH, "//label[@role='combobox']")
                     stan.click()
                     time.sleep(5)
                     try:
@@ -106,7 +110,7 @@ class MainScript:
                     test.click()
 
                     # Opis
-                    desc = driver.find_element(By.XPATH, "//label[@aria-label='Opis']")
+                    desc = driver.find_elements(By.TAG_NAME, "textarea")[0]
                     desc.send_keys(product[4])
 
                     # Dostępność
@@ -117,7 +121,9 @@ class MainScript:
                     # available.click()
 
                     # Lokalizacja
-                    location = driver.find_element(By.XPATH, "//label[@aria-label='Lokalizacja']")
+                    span_element = driver.find_element(By.XPATH, "//span[text()='Lokalizacja']")
+                    parent_div = span_element.find_element(By.XPATH, "./parent::div")
+                    location = parent_div.find_element(By.XPATH, ".//input")
                     locations = self.db.fetch("localizations", "localization")
                     counter1 = 0
                     for i in locations:
