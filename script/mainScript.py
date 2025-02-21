@@ -59,9 +59,12 @@ class MainScript:
                     time.sleep(4)
 
                     #Zapamiętaj
-                    remember = WebDriverWait(driver, 10).until(
-                        ec.presence_of_element_located((By.XPATH, "//div[@aria-label='Zamknij']")))
-                    remember.click()
+                    try:
+                        remember = WebDriverWait(driver, 10).until(
+                            ec.presence_of_element_located((By.XPATH, "//div[@aria-label='Zamknij']")))
+                        remember.click()
+                    except Exception:
+                        pass
 
                     # Zdjęcia
                     images1 = self.db.findAllImagesByProduct(product1)
