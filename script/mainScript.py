@@ -133,7 +133,7 @@ class MainScript:
                         locations[counter1] = i[0]
                         counter1 += 1
                     time.sleep(5)
-                    location.send_keys(Keys.BACKSPACE * 10 + locations[random.randint(0, len(locations) - 1)])
+                    location.send_keys(Keys.BACKSPACE * 30 + locations[random.randint(0, len(locations) - 1)])
                     location.click()
                     time.sleep(5)
                     location.send_keys(Keys.ARROW_DOWN + Keys.ENTER)
