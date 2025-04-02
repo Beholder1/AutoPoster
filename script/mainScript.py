@@ -91,15 +91,16 @@ class MainScript:
                     inputs[6].send_keys(product[3])
 
                     # Kategoria
-                    kategoria = driver.find_element(By.XPATH, "//label[@role='button']")
+                    combos = driver.find_elements(By.CSS_SELECTOR, '[role="combobox"]')
+                    kategoria = combos[1]
                     kategoria.click()
                     time.sleep(1)
-                    tools = driver.find_elements(By.XPATH, "//div[@role='button']")
+                    tools = driver.find_elements(By.XPATH, "//div[@aria-label='Dropdown menu']//div[@role='button']")
                     tools[len(tools) - 1 - (26 - category)].click()
 
                     # Stan
                     time.sleep(5)
-                    stan = driver.find_element(By.XPATH, "//label[@role='combobox']")
+                    stan = combos[2]
                     stan.click()
                     time.sleep(5)
                     try:
