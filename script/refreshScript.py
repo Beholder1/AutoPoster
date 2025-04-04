@@ -1,5 +1,6 @@
 import random
 import time
+from typing import List
 
 from selenium import webdriver
 from selenium.webdriver import ChromeOptions
@@ -10,14 +11,17 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 
 class RefreshScript:
-    def __init__(self, db, accounts, incognito, refresh):
+    LOGIN_URL = "https://facebook.com"
+    MARKETPLACE_URL = "https://www.facebook.com/marketplace/selling/renew_listings"
+
+    def __init__(self, db, accounts: List[str], incognito: bool, refresh: bool):
         self.db = db
         options = ChromeOptions()
         options.add_argument("--disable-infobars")
         options.add_argument("start-maximized")
         options.add_argument("--disable-extensions")
         options.add_argument("--disable-search-engine-choice-screen")
-        if incognito != 0:
+        if incognito:
             options.add_argument("--incognito")
         # Pass the argument 1 to allow and 2 to block
         options.add_experimental_option("prefs", {
@@ -31,7 +35,7 @@ class RefreshScript:
             driver = webdriver.Chrome(options=options)
             try:
                 # Logowanie
-                driver.get("https://facebook.com")
+                driver.get(self.LOGIN_URL)
                 email = driver.find_element(By.ID, "email")
                 time.sleep(random.uniform(2, 5))
                 email.send_keys(self.db.getA("email", account))
@@ -41,7 +45,7 @@ class RefreshScript:
                 time.sleep(random.uniform(2, 5))
                 password.send_keys(Keys.ENTER)
                 time.sleep(4)
-                driver.get("https://www.facebook.com/marketplace/selling/renew_listings")
+                driver.get(self.MARKETPLACE_URL)
                 while True:
                     refreshButtons = WebDriverWait(driver, 60).until(
                         ec.presence_of_all_elements_located((By.XPATH, "(//div[@aria-label='Odnów'])")))

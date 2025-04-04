@@ -5,17 +5,17 @@ from script import mainScript
 
 
 class ChooseProducts:
-    def __init__(self, db, numberOfProducts, hide, onlyOne, accounts, incognito):
+    def __init__(self, db, number_of_products, hide: bool, only_one: bool, accounts, incognito: bool):
         self.db = db
         activeColor = "#FDA50F"
         menuColor = '#FD6A02'
 
-        def openScript(hide, accounts, products, images, incognito):
+        def open_script(hide, accounts, products, images, incognito):
             root.destroy()
             mainScript.MainScript(self.db, hide, accounts, products, images, incognito)
 
         def on_select(event):
-            numberOfImages['text'] = "Liczba zdjęć: " + str(self.db.countAllImagesByProduct(combo1.get()))
+            number_of_images['text'] = "Liczba zdjęć: " + str(self.db.count_all_images_by_product(combo1.get()))
 
         root = tk.Tk()
 
@@ -29,8 +29,25 @@ class ChooseProducts:
         i = 1
         combos = []
         entries = []
-        if onlyOne == 0:
-            while i <= numberOfProducts:
+        if only_one:
+            ttk.Label(frame, text="Produkt: ", background="#FCFCFF", foreground="black", font=('Verdana', 12)).grid(
+                row=0, column=0)
+            number_of_images = ttk.Label(frame, background="#FCFCFF", foreground="black", font=('Verdana', 12))
+            number_of_images.grid(row=0, column=2)
+            combo1 = ttk.Combobox(frame, state="readonly", values=l)
+            combo1.grid(row=0, column=1)
+            combo1.bind('<<ComboboxSelected>>', on_select)
+
+            while i <= number_of_products:
+                count = "Produkt " + str(i) + ": "
+                ttk.Label(frame, text=count, background="#FCFCFF", foreground="black", font=('Verdana', 12)).grid(row=i,
+                                                                                                                  column=0)
+                image = ttk.Entry(frame)
+                image.grid(row=i, column=2)
+                entries.append(image)
+                i += 1
+        else:
+            while i <= number_of_products:
                 count = "Produkt " + str(i) + ": "
                 ttk.Label(frame, text=count).grid(row=i, column=0)
                 combo = ttk.Combobox(frame, state="readonly", values=l)
@@ -40,37 +57,20 @@ class ChooseProducts:
                 image.grid(row=i, column=3)
                 entries.append(image)
                 i += 1
-        else:
-            ttk.Label(frame, text="Produkt: ", background="#FCFCFF", foreground="black", font=('Verdana', 12)).grid(
-                row=0, column=0)
-            numberOfImages = ttk.Label(frame, background="#FCFCFF", foreground="black", font=('Verdana', 12))
-            numberOfImages.grid(row=0, column=2)
-            combo1 = ttk.Combobox(frame, state="readonly", values=l)
-            combo1.grid(row=0, column=1)
-            combo1.bind('<<ComboboxSelected>>', on_select)
 
-            while i <= numberOfProducts:
-                count = "Produkt " + str(i) + ": "
-                ttk.Label(frame, text=count, background="#FCFCFF", foreground="black", font=('Verdana', 12)).grid(row=i,
-                                                                                                                  column=0)
-                image = ttk.Entry(frame)
-                image.grid(row=i, column=2)
-                entries.append(image)
-                i += 1
-
-        def productsGet():
+        def products_get():
             products = []
-            if onlyOne == 0:
-                for combo in combos:
-                    products.append(combo.get())
-            else:
+            if only_one:
                 j = 0
-                while j < numberOfProducts:
+                while j < number_of_products:
                     products.append(combo1.get())
                     j += 1
+            else:
+                for combo in combos:
+                    products.append(combo.get())
             return products
 
-        def imagesGet():
+        def images_get():
             images = []
             for entry in entries:
                 images.append(list(entry.get().split(",")))
@@ -78,7 +78,7 @@ class ChooseProducts:
 
         button = tk.Button(frame, text="Uruchom", background=menuColor, activebackground=activeColor, relief=tk.SOLID,
                            borderwidth=1,
-                           command=lambda: openScript(hide, accounts, productsGet(), imagesGet(), incognito))
-        button.grid(row=numberOfProducts + 1, column=1)
+                           command=lambda: open_script(hide, accounts, products_get(), images_get(), incognito))
+        button.grid(row=number_of_products + 1, column=1)
 
         root.mainloop()
