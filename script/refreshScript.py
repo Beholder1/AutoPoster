@@ -36,13 +36,13 @@ class RefreshScript:
             try:
                 # Logowanie
                 driver.get(self.LOGIN_URL)
-                email = driver.find_element(By.ID, "email")
-                time.sleep(random.uniform(3, 6))
-                email.send_keys(self.db.getA("email", account))
+                time.sleep(random.uniform(5, 10))
+                driver.execute_script("document.getElementById('email').value = arguments[0];",
+                                      self.db.getA("email", account))
                 password = driver.find_element(By.ID, "pass")
-                time.sleep(random.uniform(3, 6))
+                time.sleep(random.uniform(5, 10))
                 password.send_keys(self.db.getA("password", account))
-                time.sleep(random.uniform(3, 6))
+                time.sleep(random.uniform(5, 10))
                 password.send_keys(Keys.ENTER)
                 time.sleep(4)
                 driver.get(self.MARKETPLACE_URL)

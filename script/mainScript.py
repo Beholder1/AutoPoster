@@ -36,13 +36,13 @@ class MainScript:
 
                 # Logowanie
                 driver.get("https://facebook.com")
-                email = driver.find_element(By.ID, "email")
-                time.sleep(random.uniform(3, 6))
-                email.send_keys(self.db.getA("email", account))
+                time.sleep(random.uniform(5, 10))
+                driver.execute_script("document.getElementById('email').value = arguments[0];",
+                                      self.db.getA("email", account))
                 password = driver.find_element(By.ID, "pass")
-                time.sleep(random.uniform(3, 6))
+                time.sleep(random.uniform(5, 10))
                 password.send_keys(self.db.getA("password", account))
-                time.sleep(random.uniform(3, 6))
+                time.sleep(random.uniform(5, 10))
                 password.send_keys(Keys.ENTER)
                 time.sleep(4)
                 counter = 0
@@ -58,7 +58,7 @@ class MainScript:
                     driver.get("https://www.facebook.com/marketplace/create/item")
                     time.sleep(4)
 
-                    #Zapamiętaj
+                    # Zapamiętaj
                     try:
                         remember = WebDriverWait(driver, 10).until(
                             ec.presence_of_element_located((By.XPATH, "//div[@aria-label='Zamknij']")))
@@ -159,7 +159,7 @@ class MainScript:
                     time.sleep(3)
                 driver.quit()
             except BaseException as e:
-                driver.quit()
+
                 accounts_with_errors.append(account)
                 print(e)
         if len(accounts_with_errors) > 0:
