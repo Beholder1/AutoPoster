@@ -4,7 +4,7 @@ import time
 import clipboard
 import selenium.common.exceptions
 from selenium import webdriver
-from selenium.webdriver import ChromeOptions
+from selenium.webdriver import ChromeOptions, ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
@@ -29,6 +29,14 @@ class MainScript:
         random.shuffle(accounts)
 
         accounts_with_errors = []
+
+        def human_type(element, text):
+            actions = ActionChains(driver)
+            actions.move_to_element(element).click().perform()
+            time.sleep(random.uniform(0.2, 0.5))
+            for character in text:
+                actions.send_keys(character).perform()
+                time.sleep(random.uniform(0.1, 0.3))
         for account in accounts:
             driver = webdriver.Chrome(options=options)
             try:
@@ -36,13 +44,16 @@ class MainScript:
 
                 # Logowanie
                 driver.get("https://facebook.com")
-                time.sleep(random.uniform(5, 10))
-                driver.execute_script("document.getElementById('email').value = arguments[0];",
-                                      self.db.getA("email", account))
+                time.sleep(random.uniform(2, 5))
+                cookies = driver.find_elements(By.XPATH, "//div[@role='button']")[-2]
+                cookies.click()
+                time.sleep(random.uniform(2, 5))
+                email = driver.find_element(By.ID, "email")
+                human_type(email, self.db.getA("email", account))
+                time.sleep(random.uniform(2, 5))
                 password = driver.find_element(By.ID, "pass")
-                time.sleep(random.uniform(5, 10))
-                password.send_keys(self.db.getA("password", account))
-                time.sleep(random.uniform(5, 10))
+                human_type(password, self.db.getA("password", account))
+                time.sleep(random.uniform(2, 5))
                 password.send_keys(Keys.ENTER)
                 time.sleep(4)
                 counter = 0
