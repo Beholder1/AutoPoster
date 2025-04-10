@@ -8,7 +8,7 @@ class EditAccount:
         root = tk.Tk()
         self.account = account
 
-        def updateAccount():
+        def update_account():
             self.db.update("parts", "name", entry1.get(), "name", self.account)
             self.account = entry1.get()
 
@@ -18,7 +18,7 @@ class EditAccount:
         tk.Label(frame1, text="Nazwa: ").grid(row=0, column=0)
         entry1 = ttk.Entry(frame1)
         entry1.grid(row=0, column=1)
-        button = tk.Button(frame1, text="Edytuj", command=lambda: updateAccount())
+        button = tk.Button(frame1, text="Edytuj", command=lambda: update_account())
         button.grid(row=0, column=2)
 
         tk.Label(frame1, text="Email: ").grid(row=1, column=0)

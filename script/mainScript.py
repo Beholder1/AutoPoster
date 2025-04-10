@@ -12,14 +12,14 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 
 class MainScript:
-    def __init__(self, db, hide, accounts, products, images, incognito):
+    def __init__(self, db, hide: bool, accounts, products, images, incognito: bool):
         self.db = db
         options = ChromeOptions()
         options.add_argument("--disable-infobars")
         options.add_argument("start-maximized")
         options.add_argument("--disable-extensions")
         options.add_argument("--disable-search-engine-choice-screen")
-        if incognito != 0:
+        if incognito:
             options.add_argument("--incognito")
         # Pass the argument 1 to allow and 2 to block
         options.add_experimental_option("prefs", {
@@ -28,7 +28,7 @@ class MainScript:
 
         random.shuffle(accounts)
 
-        accountsWithErrors = []
+        accounts_with_errors = []
         for account in accounts:
             driver = webdriver.Chrome(options=options)
             try:
@@ -37,22 +37,22 @@ class MainScript:
                 # Logowanie
                 driver.get("https://facebook.com")
                 email = driver.find_element(By.ID, "email")
-                time.sleep(random.uniform(2, 5))
+                time.sleep(random.uniform(3, 6))
                 email.send_keys(self.db.getA("email", account))
                 password = driver.find_element(By.ID, "pass")
-                time.sleep(random.uniform(2, 5))
+                time.sleep(random.uniform(3, 6))
                 password.send_keys(self.db.getA("password", account))
-                time.sleep(random.uniform(2, 5))
+                time.sleep(random.uniform(3, 6))
                 password.send_keys(Keys.ENTER)
                 time.sleep(4)
                 counter = 0
                 for product1 in products:
-                    product = self.db.findProductByName(product1)
-                    categories = db.findAllProductCategoriesByProductId(product[0])
-                    categoriesIds = []
+                    product = self.db.find_product_by_name(product1)
+                    categories = db.find_all_product_categories_by_product_id(product[0])
+                    categories_ids = []
                     for i in categories:
-                        categoriesIds.append(i[0])
-                    category = categoriesIds[random.randint(0, len(categoriesIds) - 1)]
+                        categories_ids.append(i[0])
+                    category = categories_ids[random.randint(0, len(categories_ids) - 1)]
 
                     # Przejście do postowania ogłoszenia
                     driver.get("https://www.facebook.com/marketplace/create/item")
@@ -67,7 +67,7 @@ class MainScript:
                         pass
 
                     # Zdjęcia
-                    images1 = self.db.findAllImagesByProduct(product1)
+                    images1 = self.db.find_all_images_by_product(product1)
                     images2 = []
                     for image in images[counter]:
                         images2.append(images1[int(image) - 1])
@@ -140,7 +140,7 @@ class MainScript:
                     location.send_keys(Keys.ARROW_DOWN + Keys.ENTER)
 
                     # Ukryj przed znajomymi
-                    if hide != 0:
+                    if hide:
                         hideBeforeFriends = driver.find_elements(By.XPATH, "(//div[@role='switch'])[2]")
                         hideBeforeFriends[len(hideBeforeFriends) - 1].click()
 
@@ -160,7 +160,7 @@ class MainScript:
                 driver.quit()
             except BaseException as e:
                 driver.quit()
-                accountsWithErrors.append(account)
+                accounts_with_errors.append(account)
                 print(e)
-        if len(accountsWithErrors) > 0:
-            print("Błąd podczas wrzucania kont o nazwach: ", accountsWithErrors)
+        if len(accounts_with_errors) > 0:
+            print("Błąd podczas wrzucania kont o nazwach: ", accounts_with_errors)
