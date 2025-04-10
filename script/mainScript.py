@@ -37,22 +37,22 @@ class MainScript:
                 # Logowanie
                 driver.get("https://facebook.com")
                 email = driver.find_element(By.ID, "email")
-                time.sleep(random.uniform(2, 5))
+                time.sleep(random.uniform(3, 6))
                 email.send_keys(self.db.getA("email", account))
                 password = driver.find_element(By.ID, "pass")
-                time.sleep(random.uniform(2, 5))
+                time.sleep(random.uniform(3, 6))
                 password.send_keys(self.db.getA("password", account))
-                time.sleep(random.uniform(2, 5))
+                time.sleep(random.uniform(3, 6))
                 password.send_keys(Keys.ENTER)
                 time.sleep(4)
                 counter = 0
                 for product1 in products:
                     product = self.db.find_product_by_name(product1)
                     categories = db.find_all_product_categories_by_product_id(product[0])
-                    categoriesIds = []
+                    categories_ids = []
                     for i in categories:
-                        categoriesIds.append(i[0])
-                    category = categoriesIds[random.randint(0, len(categoriesIds) - 1)]
+                        categories_ids.append(i[0])
+                    category = categories_ids[random.randint(0, len(categories_ids) - 1)]
 
                     # Przejście do postowania ogłoszenia
                     driver.get("https://www.facebook.com/marketplace/create/item")

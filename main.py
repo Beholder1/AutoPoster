@@ -11,7 +11,7 @@ from db import Database
 
 class Main:
     def __init__(self):
-        db = Database("store2.db")
+        db = Database("store.db")
         bg_color = '#FCFCFF'
         active_color = "#FDA50F"
         menuColor = '#FD6A02'
