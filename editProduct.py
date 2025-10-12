@@ -9,15 +9,15 @@ class EditProduct:
         root.configure(background="white")
         root.title("Edytuj produkt")
         self.product = product
-        wholeProduct = db.findProductByName(self.product)
+        wholeProduct = db.find_product_by_name(self.product)
         style = ttk.Style()
 
-        def updateProduct():
+        def update_product():
             self.db.update("product", "productName", entry1.get(), "productName", self.product)
             self.product = entry1.get()
 
-        def addCategory():
-            addButton.grid_forget()
+        def add_category():
+            add_button.grid_forget()
             label1 = tk.Label(frame1, text="Kategoria " + str(self.counter) + ":", background="white",
                               foreground="black", font=('Verdana', 12))
             label1.grid(row=3 + self.counter, column=0)
@@ -27,25 +27,25 @@ class EditProduct:
             entry5 = ttk.Combobox(frame1, state="readonly", values=l1)
             entry5.grid(row=3 + self.counter, column=2)
             button1 = tk.Button(frame1, text="Dodaj")
-            button1.configure(command=lambda: executeAdding(button1, entry5, label1))
+            button1.configure(command=lambda: execute_adding(button1, entry5, label1))
             button1.grid(row=3 + self.counter, column=3)
             self.counter += 1
 
-        def executeAdding(button2, entry6, label2):
-            addButton.grid_configure(row=4 + self.counter, column=3)
-            db.saveCategoriesForProducts(productId, db.findCategory(entry6.get()))
-            g = db.findCategory(entry6.get())
+        def execute_adding(button2, entry6, label2):
+            add_button.grid_configure(row=4 + self.counter, column=3)
+            db.save_categories_for_products(productId, db.find_category(entry6.get()))
+            g = db.find_category(entry6.get())
             button2.configure(text="Edytuj",
-                              command=lambda: db.updateC(db.findCategory(entry6.get()), str(productId), str(g)))
+                              command=lambda: db.update_category(db.find_category(entry6.get()), str(productId), str(g)))
             button3 = tk.Button(frame1, text="Usuń")
             button3.configure(
-                command=lambda c=entry6.get(), b=button2, e=entry6, b1=button3, l=label2: executeDelete(
-                    db.findCategory(c), b,
+                command=lambda c=entry6.get(), b=button2, e=entry6, b1=button3, l=label2: execute_delete(
+                    db.find_category(c), b,
                     e, b1, l))
             button3.grid(row=3 + self.counter - 1, column=4)
 
-        def executeDelete(categoryToDelete, buttonTD, entryTD, button1TD, labelTD):
-            db.deleteCategoriesForProductsById(str(productId), str(categoryToDelete))
+        def execute_delete(categoryToDelete, buttonTD, entryTD, button1TD, labelTD):
+            db.delete_categories_for_products_by_id(str(productId), str(categoryToDelete))
             buttonTD.destroy()
             entryTD.destroy()
             button1TD.destroy()
@@ -60,7 +60,7 @@ class EditProduct:
             row=0, column=1)
         entry1 = ttk.Entry(frame1)
         entry1.grid(row=0, column=2)
-        button = tk.Button(frame1, text="Edytuj", command=lambda: updateProduct())
+        button = tk.Button(frame1, text="Edytuj", command=lambda: update_product())
         button.grid(row=0, column=3)
 
         ttk.Label(frame1, text="Tytuł: ", background="white", foreground="black", font=('Verdana', 12)).grid(row=1,
@@ -95,7 +95,7 @@ class EditProduct:
         button.grid(row=3, column=3)
 
         productId = wholeProduct[0]
-        categories = db.findAllProductCategoriesByProductId(productId)
+        categories = db.find_all_product_categories_by_product_id(productId)
         self.counter = 1
         for category in categories:
             label = ttk.Label(frame1, text="Kategoria " + str(self.counter) + ":", background="white",
@@ -107,18 +107,18 @@ class EditProduct:
             entry4 = ttk.Combobox(frame1, state="readonly", values=l1)
             entry4.grid(row=3 + self.counter, column=2)
             button = tk.Button(frame1, text="Edytuj",
-                               command=lambda c=category[0], e=entry4: db.updateC(db.findCategory(e.get()),
-                                                                                  str(productId), str(c)))
+                               command=lambda c=category[0], e=entry4: db.update_category(db.find_category(e.get()),
+                                                                                          str(productId), str(c)))
             button.grid(row=3 + self.counter, column=3)
             if self.counter != 1:
                 button1 = tk.Button(frame1, text="Usuń")
                 button1.configure(
-                    command=lambda c=category[0], b=button, e=entry4, b1=button1, l=label: executeDelete(c, b, e, b1,
+                    command=lambda c=category[0], b=button, e=entry4, b1=button1, l=label: execute_delete(c, b, e, b1,
                                                                                                          l))
                 button1.grid(row=3 + self.counter, column=4)
             self.counter += 1
-        addButton = tk.Button(frame1, text="Dodaj kategorię",
-                              command=lambda: addCategory())
-        addButton.grid(row=3 + self.counter, column=3)
+        add_button = tk.Button(frame1, text="Dodaj kategorię",
+                              command=lambda: add_category())
+        add_button.grid(row=3 + self.counter, column=3)
 
         root.mainloop()

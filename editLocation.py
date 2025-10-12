@@ -8,7 +8,7 @@ class EditLocation:
         root = tk.Tk()
         self.location = location
 
-        def updateLocation():
+        def update_location():
             self.db.update("localizations", "localization", entry1.get(), "localization", self.location)
             self.location = entry1.get()
 
@@ -18,7 +18,7 @@ class EditLocation:
         tk.Label(frame1, text="Nazwa: ").grid(row=0, column=0)
         entry1 = ttk.Entry(frame1)
         entry1.grid(row=0, column=1)
-        button = tk.Button(frame1, text="Edytuj", command=lambda: updateLocation())
+        button = tk.Button(frame1, text="Edytuj", command=lambda: update_location())
         button.grid(row=0, column=2)
 
         root.mainloop()
