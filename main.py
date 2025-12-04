@@ -11,7 +11,7 @@ from db import Database
 
 class Main:
     def __init__(self):
-        db = Database("store.db")
+        db = Database("store2.db")
         bg_color = '#FCFCFF'
         active_color = "#FDA50F"
         menuColor = '#FD6A02'
@@ -43,27 +43,6 @@ class Main:
 
         frame = tk.Frame(root, bg=menuColor, width=150, height=root.winfo_height())
         frame.grid(row=0, column=0, sticky='nws')
-
-        home_button = tk.Button(frame, text="Strona główna", background=menuColor, fg=font_color,
-                               font=('MS Reference Sans Serif', 13), relief=tk.SUNKEN, borderwidth=0,
-                               activebackground=menuColor, command=lambda: raise_frame(home_frame))
-        home_button.grid(row=2, column=0, pady=5, sticky='nwe')
-        refresh_button = tk.Button(frame, text="Odświeżanie", background=menuColor, fg=font_color,
-                                  font=('MS Reference Sans Serif', 13), relief=tk.SUNKEN, borderwidth=0,
-                                  activebackground=menuColor, command=lambda: raise_frame(refresh_frame))
-        refresh_button.grid(row=3, column=0, pady=5, sticky='nwe')
-        account_button = tk.Button(frame, text="Konta", background=menuColor, fg=font_color,
-                                  font=('MS Reference Sans Serif', 13), relief=tk.SUNKEN, borderwidth=0,
-                                  activebackground=menuColor, command=lambda: raise_frame(frame2))
-        account_button.grid(row=4, column=0, pady=5, sticky='nwe')
-        product_button = tk.Button(frame, text="Produkty", background=menuColor, fg=font_color,
-                                  font=('MS Reference Sans Serif', 13), relief=tk.SUNKEN, borderwidth=0,
-                                  activebackground=menuColor, command=lambda: raise_frame(frame3))
-        product_button.grid(row=5, column=0, pady=5, sticky='nwe')
-        location_button = tk.Button(frame, text="Lokalizacje", background=menuColor, fg=font_color,
-                                   font=('MS Reference Sans Serif', 13), relief=tk.SUNKEN, borderwidth=0,
-                                   activebackground=menuColor, command=lambda: raise_frame(frame4))
-        location_button.grid(row=6, column=0, pady=5, sticky='nwe')
 
         frame.grid_propagate(False)
 
@@ -256,8 +235,23 @@ class Main:
                            command=lambda: update_combo(comboLD, "localizations", "localization", comboLE))
         button.grid(row=2, column=1)
 
-        refresh_frame = refreshPage.RefreshPage(root, db, bg_color, menuColor, active_color).getPage()
+        refresh_frame = refreshPage.RefreshPage(root, db, bg_color, menuColor, active_color).get_page()
         home_frame = homePage.HomePage(root, db, bg_color, menuColor, active_color).get_page()
+
+        buttons_data = [
+            ("Strona główna", home_frame),
+            ("Odświeżanie", refresh_frame),
+            ("Konta", frame2),
+            ("Produkty", frame3),
+            ("Lokalizacje", frame4)
+        ]
+
+        for idx, (text, frame_target) in enumerate(buttons_data):
+            btn = tk.Button(frame, text=text, background=menuColor, fg=font_color,
+                            font=('MS Reference Sans Serif', 13), relief=tk.SUNKEN, borderwidth=0,
+                            activebackground=menuColor,
+                            command=lambda f=frame_target: raise_frame(f))
+            btn.grid(row=2 + idx, column=0, pady=5, sticky='nwe')
 
         root.grid_columnconfigure(1, weight=1)
         root.mainloop()

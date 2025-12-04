@@ -17,7 +17,7 @@ class ChooseProducts:
         def on_select(event):
             number_of_images['text'] = "Liczba zdjęć: " + str(self.db.count_all_images_by_product(combo1.get()))
 
-        root = tk.Tk()
+        root = tk.Toplevel()
 
         frame = tk.Frame(root, background='#FCFCFF')
         frame.grid(row=0, column=0)
@@ -80,5 +80,3 @@ class ChooseProducts:
                            borderwidth=1,
                            command=lambda: open_script(hide, accounts, products_get(), images_get(), incognito))
         button.grid(row=number_of_products + 1, column=1)
-
-        root.mainloop()

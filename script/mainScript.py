@@ -1,5 +1,6 @@
 import random
 import time
+import traceback
 
 import clipboard
 import selenium.common.exceptions
@@ -37,6 +38,7 @@ class MainScript:
             for character in text:
                 actions.send_keys(character).perform()
                 time.sleep(random.uniform(0.1, 0.3))
+
         for account in accounts:
             driver = webdriver.Chrome(options=options)
             try:
@@ -106,7 +108,7 @@ class MainScript:
                     kategoria = combos[1]
                     kategoria.click()
                     time.sleep(1)
-                    tools = driver.find_elements(By.XPATH, "//div[@aria-label='Dropdown menu']//div[@role='button']")
+                    tools = driver.find_elements(By.XPATH, "//div[@role='dialog']//div[@role='button']")
                     tools[len(tools) - 1 - (26 - category)].click()
 
                     # Stan
@@ -169,9 +171,8 @@ class MainScript:
 
                     time.sleep(3)
                 driver.quit()
-            except BaseException as e:
-
+            except BaseException:
                 accounts_with_errors.append(account)
-                print(e)
+                print(traceback.format_exc())
         if len(accounts_with_errors) > 0:
             print("Błąd podczas wrzucania kont o nazwach: ", accounts_with_errors)

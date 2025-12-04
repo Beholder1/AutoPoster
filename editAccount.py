@@ -5,7 +5,7 @@ from tkinter import ttk
 class EditAccount:
     def __init__(self, account, db):
         self.db = db
-        root = tk.Tk()
+        root = tk.Toplevel()
         self.account = account
 
         def update_account():
@@ -34,5 +34,3 @@ class EditAccount:
         button = tk.Button(frame1, text="Edytuj",
                            command=lambda: db.update("parts", "password", entry3.get(), "name", self.account))
         button.grid(row=2, column=2)
-
-        root.mainloop()

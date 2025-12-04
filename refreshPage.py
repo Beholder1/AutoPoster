@@ -32,12 +32,13 @@ class RefreshPage:
                     accounts.append(i[0])
                 refreshScript.RefreshScript(db, accounts, self.incognito_var.get(), self.to_end_var.get())
             else:
-                chooseAccounts.ChooseAccountsForRefresh(db, int(number_of_accounts.get()), self.incognito_var.get(), self.to_end_var.get())
+                chooseAccounts.ChooseAccountsForRefresh(db, int(number_of_accounts.get()), self.incognito_var.get(),
+                                                        self.to_end_var.get())
 
         run_button = tk.Button(self.refresh_page, background=menu_color, width=8, text="Uruchom",
-                              activebackground=active_color, relief=tk.SOLID, borderwidth=1,
-                              command=lambda: chooseNextStep(self.all_accounts_var.get()))
+                               activebackground=active_color, relief=tk.SOLID, borderwidth=1,
+                               command=lambda: chooseNextStep(self.all_accounts_var.get()))
         run_button.grid(row=4, column=1, sticky="w")
 
-    def getPage(self) -> tk.Frame:
+    def get_page(self) -> tk.Frame:
         return self.refresh_page

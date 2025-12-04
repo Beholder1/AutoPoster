@@ -5,7 +5,7 @@ from tkinter import ttk
 class EditLocation:
     def __init__(self, location, db):
         self.db = db
-        root = tk.Tk()
+        root = tk.Toplevel()
         self.location = location
 
         def update_location():
@@ -20,5 +20,3 @@ class EditLocation:
         entry1.grid(row=0, column=1)
         button = tk.Button(frame1, text="Edytuj", command=lambda: update_location())
         button.grid(row=0, column=2)
-
-        root.mainloop()

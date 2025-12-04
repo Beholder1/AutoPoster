@@ -17,7 +17,7 @@ class ChooseAccounts:
                                           only_one,
                                           accounts, incognito)
 
-        root = tk.Tk()
+        root = tk.Toplevel()
 
         frame = tk.Frame(root, background='#FCFCFF')
         frame.grid(row=0, column=0)
@@ -45,11 +45,9 @@ class ChooseAccounts:
 
         button = tk.Button(frame, text="Uruchom", background=menuColor, activebackground=activeColor, relief=tk.SOLID,
                            borderwidth=1, command=lambda: open_script(number_of_products, hide,
-                                                                     only_one,
-                                                                     accountsGet(), incognito))
+                                                                      only_one,
+                                                                      accountsGet(), incognito))
         button.grid(row=number_of_accounts + 1, column=1)
-
-        root.mainloop()
 
 
 class ChooseAccountsForRefresh:
@@ -62,7 +60,7 @@ class ChooseAccountsForRefresh:
             root.destroy()
             refreshScript.RefreshScript(self.db, accounts, incognito, refresh)
 
-        root = tk.Tk()
+        root = tk.Toplevel()
 
         frame = tk.Frame(root, background='#FCFCFF')
         frame.grid(row=0, column=0)
@@ -91,5 +89,3 @@ class ChooseAccountsForRefresh:
         button = tk.Button(frame, text="Uruchom", background=menuColor, activebackground=activeColor, relief=tk.SOLID,
                            borderwidth=1, command=lambda: open_script(accounts_get(), incognito, refresh))
         button.grid(row=number_of_accounts + 1, column=1)
-
-        root.mainloop()

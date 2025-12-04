@@ -5,12 +5,11 @@ from tkinter import ttk
 class EditProduct:
     def __init__(self, product, db):
         self.db = db
-        root = tk.Tk()
+        root = tk.Toplevel()
         root.configure(background="white")
         root.title("Edytuj produkt")
         self.product = product
         wholeProduct = db.find_product_by_name(self.product)
-        style = ttk.Style()
 
         def update_product():
             self.db.update("product", "productName", entry1.get(), "productName", self.product)
@@ -36,7 +35,8 @@ class EditProduct:
             db.save_categories_for_products(productId, db.find_category(entry6.get()))
             g = db.find_category(entry6.get())
             button2.configure(text="Edytuj",
-                              command=lambda: db.update_category(db.find_category(entry6.get()), str(productId), str(g)))
+                              command=lambda: db.update_category(db.find_category(entry6.get()), str(productId),
+                                                                 str(g)))
             button3 = tk.Button(frame1, text="Usuń")
             button3.configure(
                 command=lambda c=entry6.get(), b=button2, e=entry6, b1=button3, l=label2: execute_delete(
@@ -114,11 +114,9 @@ class EditProduct:
                 button1 = tk.Button(frame1, text="Usuń")
                 button1.configure(
                     command=lambda c=category[0], b=button, e=entry4, b1=button1, l=label: execute_delete(c, b, e, b1,
-                                                                                                         l))
+                                                                                                          l))
                 button1.grid(row=3 + self.counter, column=4)
             self.counter += 1
         add_button = tk.Button(frame1, text="Dodaj kategorię",
-                              command=lambda: add_category())
+                               command=lambda: add_category())
         add_button.grid(row=3 + self.counter, column=3)
-
-        root.mainloop()

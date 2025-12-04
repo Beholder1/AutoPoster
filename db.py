@@ -45,17 +45,13 @@ class Database:
         # self.cur.execute("PRAGMA foreign_keys=on;")
         # self.conn.commit()
 
-    def add_column(self):
-        self.cur.execute("ALTER TABLE parts ADD name text")
-        self.conn.commit()
-
     def fetch(self, table, column):
-        self.cur.execute("SELECT " + column + " FROM " + table)
+        self.cur.execute(f"SELECT {column} FROM {table}")
         data = self.cur.fetchall()
         return data
 
     def remove(self, table, column, criterion):
-        self.cur.execute("DELETE FROM " + table + " WHERE " + column + " = ?", (criterion,))
+        self.cur.execute(f"DELETE FROM {table} WHERE {column} = ?", (criterion,))
         self.conn.commit()
 
     def delete_categories_for_products_by_id(self, product_id, category_id):
@@ -74,7 +70,7 @@ class Database:
         self.conn.commit()
 
     def getA(self, column, name):
-        self.cur.execute("SELECT " + column + " FROM parts WHERE name = ?", (name,))
+        self.cur.execute(f"SELECT {column} FROM parts WHERE name = ?", (name,))
         data = self.cur.fetchone()
         return data[0]
 
@@ -83,7 +79,7 @@ class Database:
         self.conn.commit()
 
     def update(self, table, column, new, criterion_column, old):
-        self.cur.execute("UPDATE " + table + " SET " + column + " = ? WHERE " + criterion_column + " = ?", (new, old))
+        self.cur.execute(f"UPDATE {table} SET {column} = ? WHERE {criterion_column} = ?", (new, old))
         self.conn.commit()
 
     def update_category(self, new_category, product_id, category_id):
