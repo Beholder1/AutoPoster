@@ -3,7 +3,15 @@ from PyInstaller.utils.hooks import collect_all
 
 datas = []
 binaries = []
-hiddenimports = []
+hiddenimports = [
+    'selenium.webdriver.chrome.options',
+    'selenium.webdriver.chrome.service',
+    'selenium.webdriver.edge.options',
+    'selenium.webdriver.edge.service',
+    'selenium.webdriver.common.by',
+    'selenium.webdriver.support.wait',
+    'selenium.webdriver.support.expected_conditions',
+]
 tmp_ret = collect_all('tksvg')
 datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
 

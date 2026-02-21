@@ -23,7 +23,7 @@ class MainScript(BaseScript):
         accounts_with_errors = []
 
         for account in accounts:
-            driver = webdriver.Chrome(options=options)
+            driver = webdriver.Edge(options=options)
             try:
                 random.shuffle(products)
 

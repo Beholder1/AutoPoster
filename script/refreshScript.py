@@ -21,7 +21,7 @@ class RefreshScript(BaseScript):
 
         accountsWithErrors = []
         for account in accounts:
-            driver = webdriver.Chrome(options=options)
+            driver = webdriver.Edge(options=options)
             try:
                 # Logowanie
                 self.facebook_login(driver, account)

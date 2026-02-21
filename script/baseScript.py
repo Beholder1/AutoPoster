@@ -1,7 +1,7 @@
 import random
 import time
 
-from selenium.webdriver import ChromeOptions, ActionChains
+from selenium.webdriver import EdgeOptions, ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
@@ -11,7 +11,7 @@ class BaseScript:
         self.db = db
 
     def get_options(self, incognito: bool):
-        options = ChromeOptions()
+        options = EdgeOptions()
         options.add_argument("--disable-infobars")
         options.add_argument("start-maximized")
         options.add_argument("--disable-extensions")
