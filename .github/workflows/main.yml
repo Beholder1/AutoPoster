@@ -24,7 +24,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Build executable
-        run: pyinstaller main.spec
+        run: pyinstaller --onefile main.py
 
       - name: Archive the executable
         run: |
