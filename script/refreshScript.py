@@ -11,7 +11,7 @@ from script.baseScript import BaseScript
 
 class RefreshScript(BaseScript):
     LOGIN_URL = "https://facebook.com"
-    MARKETPLACE_URL = "https://www.facebook.com/marketplace/selling/renew_listings"
+    MARKETPLACE_URL = "https://www.facebook.com/marketplace/selling/renew_listings/?is_routable_dialog=true"
 
     def __init__(self, db, accounts: List[str], incognito: bool, refresh: bool):
         super().__init__(db)
