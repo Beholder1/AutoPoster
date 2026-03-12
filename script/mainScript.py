@@ -57,7 +57,7 @@ class MainScript(BaseScript):
                     for image in images[counter]:
                         images2.append(images1[int(image) - 1])
                     counter += 1
-                    photos = WebDriverWait(driver, 2).until(
+                    photos = WebDriverWait(driver, 10).until(
                         ec.presence_of_element_located((By.XPATH, "//input[@accept='image/*,image/heif,image/heic']")))
                     paths = ""
                     for image in images2:
