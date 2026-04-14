@@ -11,10 +11,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.13'
 
@@ -24,23 +24,23 @@ jobs:
           pip install -r requirements.txt
 
       - name: Build executable
-        run: pyinstaller --onefile main.py
+        run: pyinstaller --onefile --name "main-v${{ github.run_number }}" main.py
 
       - name: Archive the executable
         run: |
           mkdir dist-archive
-          move dist\main.exe dist-archive\main.exe
+          move "dist\main-v${{ github.run_number }}.exe" "dist-archive\main-v${{ github.run_number }}.exe"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: main-executable
-          path: dist-archive/main.exe
+          path: "dist-archive/main-v${{ github.run_number }}.exe"
 
       - name: Create Release and Upload Executable
         uses: ncipollo/release-action@v1
         with:
           tag: v${{ github.run_number }}
           name: Release v${{ github.run_number }}
-          artifacts: dist-archive/main.exe
+          artifacts: "dist-archive/main-v${{ github.run_number }}.exe"
           token: ${{ secrets.GITHUB_TOKEN }}
