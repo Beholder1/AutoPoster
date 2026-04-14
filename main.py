@@ -50,9 +50,9 @@ class Main:
         frame2.grid(row=0, column=1, sticky="nwse")
 
         # DODAJ
-        frame2a = tk.Frame(frame2, width=207, height=114, bg="white", relief=tk.RIDGE, borderwidth=1)
+        frame2a = tk.Frame(frame2, bg="white", relief=tk.RIDGE, borderwidth=1)
         frame2a.grid(row=0, column=0, pady=5, padx=5)
-        frame2a.grid_propagate(False)
+        # frame2a.grid_propagate(False)
         ttk.Label(frame2a, text="Dodaj", foreground=menu_color).grid(row=0, column=0, sticky="w")
         ttk.Label(frame2a, text="Nazwa: ").grid(row=1, column=0)
         name = ttk.Entry(frame2a, textvariable=tk.StringVar())
@@ -161,9 +161,9 @@ class Main:
         button.grid(row=7, column=1)
 
         # EDYTUJ
-        frame3b = tk.Frame(frame3, width=241, height=70, bg="white", relief=tk.RIDGE, borderwidth=1)
+        frame3b = tk.Frame(frame3, bg="white", relief=tk.RIDGE, borderwidth=1)
         frame3b.grid(row=1, column=0, pady=5, padx=5)
-        frame3b.grid_propagate(False)
+        # frame3b.grid_propagate(False)
         ttk.Label(frame3b, text="Edytuj", foreground=menu_color).grid(row=0, column=0, sticky="w")
         ttk.Label(frame3b, text="Produkt: ").grid(row=1, column=0)
         l = []
@@ -178,9 +178,9 @@ class Main:
         button.grid(row=2, column=1)
 
         # USUŃ
-        frame3c = tk.Frame(frame3, width=241, height=70, bg="white", relief=tk.RIDGE, borderwidth=1)
+        frame3c = tk.Frame(frame3, bg="white", relief=tk.RIDGE, borderwidth=1)
         frame3c.grid(row=2, column=0, pady=5, padx=5)
-        frame3c.grid_propagate(False)
+        # frame3c.grid_propagate(False)
         ttk.Label(frame3c, text="Usuń", foreground=menu_color).grid(row=0, column=0, sticky="w")
         ttk.Label(frame3c, text="Produkt: ").grid(row=1, column=0)
         comboPD = ttk.Combobox(frame3c, state="readonly", values=l)
@@ -197,8 +197,8 @@ class Main:
         def insert_localization(location_to_save):
             db.save_location(location_to_save.get())
 
-        frame4a = tk.Frame(frame4, width=253, height=70, bg="white", relief=tk.RIDGE, borderwidth=1)
-        frame4a.grid_propagate(False)
+        frame4a = tk.Frame(frame4, bg="white", relief=tk.RIDGE, borderwidth=1)
+        # frame4a.grid_propagate(False)
         frame4a.grid(row=0, column=0, pady=5, padx=5)
         ttk.Label(frame4a, text="Dodaj", foreground=menu_color).grid(row=0, column=0, sticky="w")
         ttk.Label(frame4a, text="Lokalizacja: ").grid(row=1, column=0)
