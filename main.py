@@ -63,10 +63,13 @@ class Main:
         ttk.Label(frame2a, text="Hasło: ").grid(row=3, column=0)
         password = ttk.Entry(frame2a, textvariable=tk.StringVar())
         password.grid(row=3, column=1)
+        ttk.Label(frame2a, text="Profil: ").grid(row=4, column=0)
+        profile_entry = ttk.Entry(frame2a, textvariable=tk.StringVar())
+        profile_entry.grid(row=4, column=1)
         button = tk.Button(frame2a, width=8, background=menu_color, activebackground=active_color, relief=tk.SOLID,
                            borderwidth=1,
-                           text="Dodaj", command=lambda: db.insert(email.get(), password.get(), name.get()))
-        button.grid(row=4, column=1)
+                           text="Dodaj", command=lambda: db.insert(email.get(), password.get(), name.get(), profile_entry.get()))
+        button.grid(row=5, column=1)
 
         # EDYTUJ
         frame2b = tk.Frame(frame2, bg="white", relief=tk.RIDGE, borderwidth=1)

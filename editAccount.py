@@ -34,3 +34,10 @@ class EditAccount:
         button = tk.Button(frame1, text="Edytuj",
                            command=lambda: db.update("parts", "password", entry3.get(), "name", self.account))
         button.grid(row=2, column=2)
+
+        tk.Label(frame1, text="Profil: ").grid(row=3, column=0)
+        entry4 = ttk.Entry(frame1)
+        entry4.grid(row=3, column=1)
+        button = tk.Button(frame1, text="Edytuj",
+                           command=lambda: db.update("parts", "profile", entry4.get(), "name", self.account))
+        button.grid(row=3, column=2)

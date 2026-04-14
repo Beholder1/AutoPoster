@@ -23,7 +23,7 @@ class Database:
         self.conn = sqlite3.connect(db)
         self.cur = self.conn.cursor()
         self.cur.execute(
-            "CREATE TABLE IF NOT EXISTS parts (id INTEGER PRIMARY KEY, email text, password text, name text)")
+            "CREATE TABLE IF NOT EXISTS parts (id INTEGER PRIMARY KEY, email text, password text, name text, profile text)")
         self.cur.execute(
             "CREATE TABLE IF NOT EXISTS product (id INTEGER PRIMARY KEY, productName text, title text, price INTEGER, description text, category INTEGER, FOREIGN KEY(category) REFERENCES categories(id))")
         self.cur.execute("CREATE TABLE IF NOT EXISTS localizations (id INTEGER PRIMARY KEY, localization text)")
@@ -74,8 +74,8 @@ class Database:
         data = self.cur.fetchone()
         return data[0]
 
-    def insert(self, email, password, name):
-        self.cur.execute("INSERT INTO parts VALUES (NULL, ?, ?, ?)", (email, password, name))
+    def insert(self, email, password, name, profile):
+        self.cur.execute("INSERT INTO parts VALUES (NULL, ?, ?, ?, ?)", (email, password, name, profile))
         self.conn.commit()
 
     def update(self, table, column, new, criterion_column, old):

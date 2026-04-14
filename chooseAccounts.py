@@ -6,16 +6,16 @@ from script import refreshScript
 
 
 class ChooseAccounts:
-    def __init__(self, db, number_of_products, hide: bool, only_one: bool, number_of_accounts, incognito: bool):
+    def __init__(self, db, number_of_products, hide: bool, only_one: bool, number_of_accounts):
         self.db = db
         activeColor = "#FDA50F"
         menuColor = '#FD6A02'
 
-        def open_script(number_of_products, hide, only_one, accounts, incognito):
+        def open_script(number_of_products, hide, only_one, accounts):
             root.destroy()
             chooseProducts.ChooseProducts(self.db, number_of_products, hide,
                                           only_one,
-                                          accounts, incognito)
+                                          accounts)
 
         root = tk.Toplevel()
 
@@ -46,19 +46,19 @@ class ChooseAccounts:
         button = tk.Button(frame, text="Uruchom", background=menuColor, activebackground=activeColor, relief=tk.SOLID,
                            borderwidth=1, command=lambda: open_script(number_of_products, hide,
                                                                       only_one,
-                                                                      accountsGet(), incognito))
+                                                                      accountsGet()))
         button.grid(row=number_of_accounts + 1, column=1)
 
 
 class ChooseAccountsForRefresh:
-    def __init__(self, db, number_of_accounts, incognito, refresh):
+    def __init__(self, db, number_of_accounts, refresh):
         self.db = db
         activeColor = "#FDA50F"
         menuColor = '#FD6A02'
 
-        def open_script(accounts, incognito, refresh):
+        def open_script(accounts, refresh):
             root.destroy()
-            refreshScript.RefreshScript(self.db, accounts, incognito, refresh)
+            refreshScript.RefreshScript(self.db, accounts, refresh)
 
         root = tk.Toplevel()
 
@@ -87,5 +87,5 @@ class ChooseAccountsForRefresh:
             return accounts
 
         button = tk.Button(frame, text="Uruchom", background=menuColor, activebackground=activeColor, relief=tk.SOLID,
-                           borderwidth=1, command=lambda: open_script(accounts_get(), incognito, refresh))
+                           borderwidth=1, command=lambda: open_script(accounts_get(), refresh))
         button.grid(row=number_of_accounts + 1, column=1)

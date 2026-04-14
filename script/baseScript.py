@@ -6,18 +6,23 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
 
+import os
+
 class BaseScript:
+    USER_DATA_DIR = os.path.join(os.environ.get('LOCALAPPDATA', ''), 'Google', 'Chrome', 'User Data')
+
     def __init__(self, db):
         self.db = db
 
-    def get_options(self, incognito: bool):
+    def get_options(self, profile: str = None):
         options = ChromeOptions()
         options.add_argument("--disable-infobars")
         options.add_argument("start-maximized")
         options.add_argument("--disable-extensions")
         options.add_argument("--disable-search-engine-choice-screen")
-        if incognito:
-            options.add_argument("--incognito")
+        if profile:
+            options.add_argument(f"--user-data-dir={self.USER_DATA_DIR}")
+            options.add_argument(f"--profile-directory={profile}")
         # Pass the argument 1 to allow and 2 to block
         options.add_experimental_option("prefs", {
             "profile.default_content_setting_values.notifications": 2
@@ -44,13 +49,16 @@ class BaseScript:
         except (IndexError, Exception):
             pass
 
-        email_elem = driver.find_element(By.XPATH, "//input[@type='text']")
-        self.human_type(driver, email_elem, self.db.getA("email", account_name))
-        time.sleep(random.uniform(2, 5))
+        try:
+            email_elem = driver.find_element(By.XPATH, "//input[@type='text']")
+            self.human_type(driver, email_elem, self.db.getA("email", account_name))
+            time.sleep(random.uniform(2, 5))
 
-        password_elem = driver.find_element(By.XPATH, "//input[@type='password']")
-        self.human_type(driver, password_elem, self.db.getA("password", account_name))
-        time.sleep(random.uniform(2, 5))
-        
-        password_elem.send_keys(Keys.ENTER)
-        time.sleep(4)
+            password_elem = driver.find_element(By.XPATH, "//input[@type='password']")
+            self.human_type(driver, password_elem, self.db.getA("password", account_name))
+            time.sleep(random.uniform(2, 5))
+            
+            password_elem.send_keys(Keys.ENTER)
+            time.sleep(4)
+        except Exception:
+            pass

@@ -5,14 +5,14 @@ from script import mainScript
 
 
 class ChooseProducts:
-    def __init__(self, db, number_of_products, hide: bool, only_one: bool, accounts, incognito: bool):
+    def __init__(self, db, number_of_products, hide: bool, only_one: bool, accounts):
         self.db = db
         activeColor = "#FDA50F"
         menuColor = '#FD6A02'
 
-        def open_script(hide, accounts, products, images, incognito):
+        def open_script(hide, accounts, products, images):
             root.destroy()
-            mainScript.MainScript(self.db, hide, accounts, products, images, incognito)
+            mainScript.MainScript(self.db, hide, accounts, products, images)
 
         def on_select(event):
             number_of_images['text'] = "Liczba zdjęć: " + str(self.db.count_all_images_by_product(combo1.get()))
@@ -78,5 +78,5 @@ class ChooseProducts:
 
         button = tk.Button(frame, text="Uruchom", background=menuColor, activebackground=activeColor, relief=tk.SOLID,
                            borderwidth=1,
-                           command=lambda: open_script(hide, accounts, products_get(), images_get(), incognito))
+                           command=lambda: open_script(hide, accounts, products_get(), images_get()))
         button.grid(row=number_of_products + 1, column=1)

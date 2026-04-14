@@ -13,14 +13,15 @@ class RefreshScript(BaseScript):
     LOGIN_URL = "https://facebook.com"
     MARKETPLACE_URL = "https://www.facebook.com/marketplace/selling/renew_listings/?is_routable_dialog=true"
 
-    def __init__(self, db, accounts: List[str], incognito: bool, refresh: bool):
+    def __init__(self, db, accounts: List[str], refresh: bool):
         super().__init__(db)
-        options = self.get_options(incognito)
 
         random.shuffle(accounts)
 
         accountsWithErrors = []
         for account in accounts:
+            profile = self.db.getA("profile", account)
+            options = self.get_options(profile)
             driver = webdriver.Chrome(options=options)
             try:
                 # Logowanie

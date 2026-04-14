@@ -14,15 +14,16 @@ from script.baseScript import BaseScript
 
 
 class MainScript(BaseScript):
-    def __init__(self, db, hide: bool, accounts, products, images, incognito: bool):
+    def __init__(self, db, hide: bool, accounts, products, images):
         super().__init__(db)
-        options = self.get_options(incognito)
 
         random.shuffle(accounts)
 
         accounts_with_errors = []
 
         for account in accounts:
+            profile = self.db.getA("profile", account)
+            options = self.get_options(profile)
             driver = webdriver.Chrome(options=options)
             try:
                 random.shuffle(products)
