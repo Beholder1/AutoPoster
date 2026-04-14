@@ -27,6 +27,7 @@ class BaseScript:
         options.add_experimental_option("prefs", {
             "profile.default_content_setting_values.notifications": 2
         })
+        print(options.arguments)
         return options
 
     def human_type(self, driver, element, text):
