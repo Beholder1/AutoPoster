@@ -22,7 +22,9 @@ class RefreshScript(BaseScript):
         for account in accounts:
             profile = self.db.getA("profile", account)
             options = self.get_options(profile)
+            print(f"Uruchamiam Chrome dla konta: {account}...")
             driver = webdriver.Chrome(options=options)
+            print("Przeglądarka uruchomiona. Rozpoczynam logowanie...")
             try:
                 # Logowanie
                 self.facebook_login(driver, account)
