@@ -20,6 +20,7 @@ class BaseScript:
         options.add_argument("start-maximized")
         options.add_argument("--disable-extensions")
         options.add_argument("--disable-search-engine-choice-screen")
+        options.add_argument("--remote-debugging-port=0")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         if profile:
