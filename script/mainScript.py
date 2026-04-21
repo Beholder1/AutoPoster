@@ -4,7 +4,6 @@ import traceback
 
 import clipboard
 import selenium.common.exceptions
-from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
@@ -23,15 +22,17 @@ class MainScript(BaseScript):
 
         for account in accounts:
             profile = self.db.getA("profile", account)
-            options = self.get_options(profile)
-            print(f"Uruchamiam Chrome dla konta: {account}...")
-            driver = webdriver.Chrome(options=options)
-            print("Przeglądarka uruchomiona. Rozpoczynam logowanie...")
+            driver = self.start_driver(profile)
             try:
                 random.shuffle(products)
 
                 # Logowanie
-                self.facebook_login(driver, account)
+                if not self.facebook_login(driver, account):
+                    try:
+                        driver.quit()
+                    except Exception:
+                        pass
+                    continue
 
                 counter = 0
                 for product1 in products:
@@ -129,13 +130,13 @@ class MainScript(BaseScript):
 
                     # Ukryj przed znajomymi
                     if hide:
-                        hideBeforeFriends = driver.find_elements(By.XPATH, "(//div[@role='switch'])[2]")
-                        hideBeforeFriends[len(hideBeforeFriends) - 1].click()
+                        hide_before_friends = driver.find_elements(By.XPATH, "(//div[@role='switch'])[2]")
+                        hide_before_friends[len(hide_before_friends) - 1].click()
 
                     try:
                         # Dalej
-                        next = driver.find_element(By.XPATH, "//div[@aria-label='Dalej']")
-                        next.click()
+                        _next = driver.find_element(By.XPATH, "//div[@aria-label='Dalej']")
+                        _next.click()
                     except selenium.common.exceptions.NoSuchElementException:
                         pass
 

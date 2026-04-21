@@ -1,30 +1,54 @@
+import os
 import random
 import time
 
+from selenium import webdriver
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver import ChromeOptions, ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
 
-import os
-
 class BaseScript:
-    USER_DATA_DIR = os.path.join(os.environ.get('LOCALAPPDATA', ''), 'Google', 'Chrome', 'User Data')
-    if not os.path.exists(USER_DATA_DIR):
-        # Fallback for different Windows setups or non-standard locations
-        USER_DATA_DIR = os.path.join(os.path.expanduser('~'), 'AppData', 'Local', 'Google', 'Chrome', 'User Data')
+    USER_DATA_DIR = os.path.join(
+        os.environ.get('LOCALAPPDATA') or os.path.join(os.path.expanduser('~'), 'AppData', 'Local'),
+        'AutoPosterChrome',
+    )
 
     def __init__(self, db):
         self.db = db
+        os.makedirs(self.USER_DATA_DIR, exist_ok=True)
+
+    def start_driver(self, profile: str = None):
+        options = self.get_options(profile)
+        driver = webdriver.Chrome(options=options)
+        real = None
+        for handle in driver.window_handles:
+            try:
+                driver.switch_to.window(handle)
+                driver.get_window_size()
+                real = handle
+                break
+            except WebDriverException:
+                continue
+        if real is None:
+            return driver
+        driver.switch_to.window(real)
+        return driver
 
     def get_options(self, profile: str = None):
         options = ChromeOptions()
         options.add_argument("--disable-infobars")
-        options.add_argument("start-maximized")
+        options.add_argument("--start-maximized")
         options.add_argument("--disable-extensions")
         options.add_argument("--disable-search-engine-choice-screen")
-        options.add_argument("--remote-debugging-port=0")
         options.add_argument("--disable-gpu")
+        options.add_argument("--no-first-run")
+        options.add_argument("--no-default-browser-check")
+        options.add_argument(
+            "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+        )
         if profile:
             options.add_argument(f"--user-data-dir={self.USER_DATA_DIR}")
             options.add_argument(f"--profile-directory={profile}")
@@ -44,23 +68,19 @@ class BaseScript:
             time.sleep(random.uniform(0.1, 0.3))
 
     def facebook_login(self, driver, account_name):
-        print(f"Przechodzę do strony logowania Facebook...")
         driver.get("https://facebook.com")
         time.sleep(random.uniform(2, 5))
-        
-        # Akceptacja ciasteczek
+        if not driver.find_elements(By.XPATH, "//input[@type='password']"):
+            return True
+
         try:
-            print("Szukam przycisku akceptacji ciasteczek...")
             cookies = driver.find_elements(By.XPATH, "//div[@role='button']")[-2]
             cookies.click()
-            print("Ciasteczka zaakceptowane.")
             time.sleep(random.uniform(2, 5))
-        except (IndexError, Exception):
-            print("Nie znaleziono przycisku ciasteczek (może już zaakceptowane).")
+        except Exception:
             pass
 
         try:
-            print(f"Loguję na konto: {account_name}...")
             email_elem = driver.find_element(By.XPATH, "//input[@type='text']")
             self.human_type(driver, email_elem, self.db.getA("email", account_name))
             time.sleep(random.uniform(2, 5))
@@ -68,10 +88,19 @@ class BaseScript:
             password_elem = driver.find_element(By.XPATH, "//input[@type='password']")
             self.human_type(driver, password_elem, self.db.getA("password", account_name))
             time.sleep(random.uniform(2, 5))
-            
+
             password_elem.send_keys(Keys.ENTER)
-            print("Dane wpisane, wysłano ENTER.")
             time.sleep(4)
-        except (IndexError, Exception):
-            print("Błąd podczas wpisywania danych logowania.")
+        except Exception:
             pass
+
+        print("Dokończ logowanie ręcznie (checkpoint/2FA) i zamknij przeglądarkę — "
+              "sesja zapisze się w profilu i kolejne uruchomienia pójdą automatem.")
+        while True:
+            try:
+                if not driver.window_handles:
+                    break
+            except WebDriverException:
+                break
+            time.sleep(1)
+        return False
