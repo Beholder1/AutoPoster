@@ -9,15 +9,15 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
 
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
 class BaseScript:
-    USER_DATA_DIR = os.path.join(
-        os.environ.get('LOCALAPPDATA') or os.path.join(os.path.expanduser('~'), 'AppData', 'Local'),
-        'AutoPosterChrome',
-    )
+    PROFILES_DIR = os.path.join(PROJECT_ROOT, 'profiles')
 
     def __init__(self, db):
         self.db = db
-        os.makedirs(self.USER_DATA_DIR, exist_ok=True)
+        os.makedirs(self.PROFILES_DIR, exist_ok=True)
 
     def start_driver(self, profile: str = None):
         options = self.get_options(profile)
@@ -50,8 +50,9 @@ class BaseScript:
             "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
         )
         if profile:
-            options.add_argument(f"--user-data-dir={self.USER_DATA_DIR}")
-            options.add_argument(f"--profile-directory={profile}")
+            profile_path = os.path.join(self.PROFILES_DIR, profile)
+            os.makedirs(profile_path, exist_ok=True)
+            options.add_argument(f"--user-data-dir={profile_path}")
         # Pass the argument 1 to allow and 2 to block
         options.add_experimental_option("prefs", {
             "profile.default_content_setting_values.notifications": 2

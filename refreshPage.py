@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 
 import chooseAccounts
+from homePage import _bool_var, _int_var
 from script import refreshScript
 
 
@@ -10,12 +11,11 @@ class RefreshPage:
         self.refresh_page = tk.Frame(root, bg=bg_color, borderwidth=1, relief=tk.RIDGE)
         self.refresh_page.grid(row=0, column=1, sticky="nwse")
 
-        self.all_accounts_var = tk.BooleanVar(value=True)
-        self.to_end_var = tk.BooleanVar(value=False)
+        self.all_accounts_var = _bool_var(db, "refresh.all_accounts", True)
+        self.to_end_var = _bool_var(db, "refresh.to_end", False)
 
         ttk.Label(self.refresh_page, text="Ile kont: ").grid(row=0, column=0)
-        number_of_accounts = ttk.Entry(self.refresh_page, textvariable=tk.IntVar(value=1))
-        # combo1.current(0)
+        number_of_accounts = ttk.Entry(self.refresh_page, textvariable=_int_var(db, "refresh.number_of_accounts", 1))
         number_of_accounts.grid(row=0, column=1, sticky="w")
         ttk.Label(self.refresh_page, text="Wszystkie konta: ").grid(row=1, column=0)
         ttk.Checkbutton(self.refresh_page, variable=self.all_accounts_var).grid(row=1, column=1, sticky="w")

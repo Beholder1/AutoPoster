@@ -31,6 +31,20 @@ class Database:
             "CREATE TABLE IF NOT EXISTS photos (id INTEGER PRIMARY KEY, path text, product INTEGER, FOREIGN KEY(product) REFERENCES products(id))")
         self.cur.execute(
             "CREATE TABLE IF NOT EXISTS categoriesForProducts (id INTEGER PRIMARY KEY, product INTEGER, category INTEGER, FOREIGN KEY(product) REFERENCES products(id), FOREIGN KEY(category) REFERENCES categories(id))")
+        self.cur.execute("CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT)")
+        self.conn.commit()
+
+    def get_setting(self, key, default=None):
+        self.cur.execute("SELECT value FROM settings WHERE key = ?", (key,))
+        row = self.cur.fetchone()
+        return row[0] if row is not None else default
+
+    def set_setting(self, key, value):
+        self.cur.execute(
+            "INSERT INTO settings (key, value) VALUES (?, ?) "
+            "ON CONFLICT(key) DO UPDATE SET value = excluded.value",
+            (key, str(value)),
+        )
         self.conn.commit()
         # k = self.fetch("product", "*")
         # for i in k:

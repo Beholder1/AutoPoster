@@ -4,3 +4,10 @@
 *.iml
 *.ipr
 *.db
+
+### Chrome profiles ###
+profiles/
+
+### Python ###
+__pycache__/
+*.pyc

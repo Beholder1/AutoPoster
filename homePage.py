@@ -5,25 +5,42 @@ import chooseAccounts
 import chooseProducts
 
 
+def _bool_var(db, key, default):
+    var = tk.BooleanVar(value=db.get_setting(key, "1" if default else "0") == "1")
+    var.trace_add("write", lambda *_: db.set_setting(key, "1" if var.get() else "0"))
+    return var
+
+
+def _int_var(db, key, default):
+    var = tk.StringVar(value=db.get_setting(key, str(default)))
+
+    def on_change(*_):
+        value = var.get()
+        if value.isdigit():
+            db.set_setting(key, value)
+
+    var.trace_add("write", on_change)
+    return var
+
+
 class HomePage:
     def __init__(self, root, db, bg_color: str, menu_color: str, active_color: str):
         self.homePage = tk.Frame(root, bg=bg_color, borderwidth=1, relief=tk.RIDGE)
         self.homePage.grid(row=0, column=1, sticky="nwse")
         ttk.Label(self.homePage, text="Ukryj: ").grid(row=0, column=0)
-        var1 = tk.BooleanVar(value=False)
+        var1 = _bool_var(db, "home.hide", False)
         ttk.Checkbutton(self.homePage, variable=var1).grid(row=0, column=1, sticky="w")
         ttk.Label(self.homePage, text="Jeden rodzaj: ").grid(row=1, column=0)
-        var2 = tk.BooleanVar(value=True)
+        var2 = _bool_var(db, "home.only_one", True)
         ttk.Checkbutton(self.homePage, variable=var2).grid(row=1, column=1, sticky="w")
         ttk.Label(self.homePage, text="Ile kont: ").grid(row=2, column=0)
-        number_of_accounts = ttk.Entry(self.homePage, textvariable=tk.IntVar(value=1))
-        # combo1.current(0)
+        number_of_accounts = ttk.Entry(self.homePage, textvariable=_int_var(db, "home.number_of_accounts", 1))
         number_of_accounts.grid(row=2, column=1, sticky="w")
         ttk.Label(self.homePage, text="Wszystkie konta: ").grid(row=3, column=0)
-        var4 = tk.BooleanVar(value=False)
+        var4 = _bool_var(db, "home.all_accounts", False)
         ttk.Checkbutton(self.homePage, variable=var4).grid(row=3, column=1, sticky="w")
         ttk.Label(self.homePage, text="Ile ogłoszeń: ").grid(row=4, column=0)
-        iterations = ttk.Entry(self.homePage, textvariable=tk.IntVar(value=1))
+        iterations = ttk.Entry(self.homePage, textvariable=_int_var(db, "home.iterations", 1))
         iterations.grid(row=4, column=1, sticky="w")
 
         def choose_next_step(skipChoosingAccounts: bool):
