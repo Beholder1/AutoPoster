@@ -1,3 +1,4 @@
+import os
 import sqlite3
 
 
@@ -33,6 +34,14 @@ class Database:
             "CREATE TABLE IF NOT EXISTS categoriesForProducts (id INTEGER PRIMARY KEY, product INTEGER, category INTEGER, FOREIGN KEY(product) REFERENCES products(id), FOREIGN KEY(category) REFERENCES categories(id))")
         self.cur.execute("CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT)")
         self.conn.commit()
+
+    def get_or_create_profile(self, account, profiles_dir):
+        profile = self.getA("profile", account)
+        if profile and os.path.isdir(os.path.join(profiles_dir, profile)):
+            return profile
+        profile = account
+        self.update("parts", "profile", profile, "name", account)
+        return profile
 
     def get_setting(self, key, default=None):
         self.cur.execute("SELECT value FROM settings WHERE key = ?", (key,))

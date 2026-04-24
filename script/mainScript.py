@@ -21,7 +21,7 @@ class MainScript(BaseScript):
         accounts_with_errors = []
 
         for account in accounts:
-            profile = self.db.getA("profile", account)
+            profile = self.db.get_or_create_profile(account, self.PROFILES_DIR)
             driver = self.start_driver(profile)
             try:
                 random.shuffle(products)
