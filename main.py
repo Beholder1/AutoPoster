@@ -118,11 +118,12 @@ class Main:
             #     i+=1
 
         def addProduct(product, title, price, desc, category):
-            db.save_product(product, title, price, desc)
-            p = db.find_product_by_name(product)[0]
-            db.save_categories_for_products(p, category)
-            for name_to_save in self.imageNames:
-                db.save_image(name_to_save, p)
+            with db.transaction():
+                db.save_product(product, title, price, desc)
+                p = db.find_product_by_name(product)[0]
+                db.save_categories_for_products(p, category)
+                for name_to_save in self.imageNames:
+                    db.save_image(name_to_save, p)
 
         frame3a = tk.Frame(frame3, bg="white", relief=tk.RIDGE, borderwidth=1)
         frame3a.grid(row=0, column=0, pady=5, padx=5)
@@ -257,6 +258,12 @@ class Main:
             btn.grid(row=2 + idx, column=0, pady=5, sticky='nwe')
 
         root.grid_columnconfigure(1, weight=1)
+
+        def on_close():
+            db.close()
+            root.destroy()
+
+        root.protocol("WM_DELETE_WINDOW", on_close)
         root.mainloop()
 
 

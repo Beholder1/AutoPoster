@@ -1,5 +1,6 @@
 import os
 import sqlite3
+from contextlib import contextmanager
 
 
 # import psycopg
@@ -23,6 +24,7 @@ class Database:
 
         self.conn = sqlite3.connect(db)
         self.cur = self.conn.cursor()
+        self._tx_depth = 0
         self.cur.execute(
             "CREATE TABLE IF NOT EXISTS parts (id INTEGER PRIMARY KEY, email text, password text, name text, profile text)")
         self.cur.execute(
@@ -33,7 +35,26 @@ class Database:
         self.cur.execute(
             "CREATE TABLE IF NOT EXISTS categoriesForProducts (id INTEGER PRIMARY KEY, product INTEGER, category INTEGER, FOREIGN KEY(product) REFERENCES products(id), FOREIGN KEY(category) REFERENCES categories(id))")
         self.cur.execute("CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT)")
-        self.conn.commit()
+        self._commit()
+
+    def _commit(self):
+        if self._tx_depth == 0:
+            self.conn.commit()
+
+    @contextmanager
+    def transaction(self):
+        """Group multiple writes into one atomic unit. Nesting is supported."""
+        self._tx_depth += 1
+        try:
+            yield
+        except BaseException:
+            self._tx_depth = 0
+            self.conn.rollback()
+            raise
+        else:
+            self._tx_depth -= 1
+            if self._tx_depth == 0:
+                self.conn.commit()
 
     def get_or_create_profile(self, account, profiles_dir):
         profile = self.getA("profile", account)
@@ -54,7 +75,7 @@ class Database:
             "ON CONFLICT(key) DO UPDATE SET value = excluded.value",
             (key, str(value)),
         )
-        self.conn.commit()
+        self._commit()
         # k = self.fetch("product", "*")
         # for i in k:
         #     self.cur.execute("INSERT INTO categoriesForProducts VALUES (NULL, " + str(i[0]) + ", " + str(i[5]) + ")")
@@ -75,22 +96,22 @@ class Database:
 
     def remove(self, table, column, criterion):
         self.cur.execute(f"DELETE FROM {table} WHERE {column} = ?", (criterion,))
-        self.conn.commit()
+        self._commit()
 
     def delete_categories_for_products_by_id(self, product_id, category_id):
         self.cur.execute("DELETE FROM categoriesForProducts WHERE product = ? AND category = ?",
                          (product_id, category_id,))
-        self.conn.commit()
+        self._commit()
 
     def delete_all_images_by_product(self, product):
         id = self.find_product_by_name(product)[0]
         self.cur.execute("DELETE FROM photos WHERE product = ?", (id,))
-        self.conn.commit()
+        self._commit()
 
     def delete_all_categories_for_products_by_product(self, product):
         id = self.find_product_by_name(product)[0]
         self.cur.execute("DELETE FROM categoriesForProducts WHERE product = ?", (id,))
-        self.conn.commit()
+        self._commit()
 
     def getA(self, column, name):
         self.cur.execute(f"SELECT {column} FROM parts WHERE name = ?", (name,))
@@ -99,20 +120,20 @@ class Database:
 
     def insert(self, email, password, name, profile):
         self.cur.execute("INSERT INTO parts VALUES (NULL, ?, ?, ?, ?)", (email, password, name, profile))
-        self.conn.commit()
+        self._commit()
 
     def update(self, table, column, new, criterion_column, old):
         self.cur.execute(f"UPDATE {table} SET {column} = ? WHERE {criterion_column} = ?", (new, old))
-        self.conn.commit()
+        self._commit()
 
     def update_category(self, new_category, product_id, category_id):
         self.cur.execute("UPDATE categoriesForProducts SET category = ? WHERE product = ? AND category = ?",
                          (new_category, product_id, category_id,))
-        self.conn.commit()
+        self._commit()
 
     def save_location(self, location):
         self.cur.execute("INSERT INTO localizations VALUES (NULL, ?)", (location,))
-        self.conn.commit()
+        self._commit()
 
     def find_location_by_id(self, id):
         self.cur.execute("SELECT localization FROM localizations WHERE id = ?", (id,))
@@ -127,7 +148,7 @@ class Database:
     def save_product(self, product_name, title, price, description):
         self.cur.execute("INSERT INTO product VALUES (NULL, ?, ?, ?, ?)",
                          (product_name, title, price, description))
-        self.conn.commit()
+        self._commit()
 
     def find_product_by_name(self, product_name):
         self.cur.execute("SELECT * FROM product WHERE productName = ?", (product_name,))
@@ -146,11 +167,11 @@ class Database:
 
     def save_categories_for_products(self, product, category):
         self.cur.execute("INSERT INTO categoriesForProducts VALUES (NULL, ?, ?)", (product, category,))
-        self.conn.commit()
+        self._commit()
 
     def save_image(self, path, product):
         self.cur.execute("INSERT INTO photos VALUES (NULL, ?, ?)", (path, product,))
-        self.conn.commit()
+        self._commit()
 
     def find_all_images_by_product(self, product):
         id = self.find_product_by_name(product)[0]
@@ -161,8 +182,14 @@ class Database:
     def count_all_images_by_product(self, product_name):
         product = self.find_product_by_name(product_name)
         self.cur.execute("SELECT COUNT(*) FROM photos WHERE product = ?", (product[0],))
-        numberOfImages = self.cur.fetchall()
-        return numberOfImages[0][0]
+        number_of_images = self.cur.fetchall()
+        return number_of_images[0][0]
+
+    def close(self):
+        try:
+            self.conn.close()
+        except Exception:
+            pass
 
     def __del__(self):
-        self.conn.close()
+        self.close()
