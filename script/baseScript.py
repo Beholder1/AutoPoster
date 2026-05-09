@@ -1,5 +1,6 @@
 import os
 import random
+import sys
 import time
 
 from selenium import webdriver
@@ -9,7 +10,10 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
 
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if getattr(sys, 'frozen', False):
+    PROJECT_ROOT: str = os.path.dirname(os.path.abspath(str(sys.executable)))
+else:
+    PROJECT_ROOT: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 class BaseScript:
@@ -83,12 +87,10 @@ class BaseScript:
 
         try:
             email_elem = driver.find_element(By.XPATH, "//input[@type='text']")
-            self.human_type(driver, email_elem, self.db.getA("email", account_name))
-            time.sleep(random.uniform(2, 5))
+            email_elem.send_keys(self.db.getA("email", account_name))
 
             password_elem = driver.find_element(By.XPATH, "//input[@type='password']")
-            self.human_type(driver, password_elem, self.db.getA("password", account_name))
-            time.sleep(random.uniform(2, 5))
+            password_elem.send_keys(self.db.getA("password", account_name))
 
             password_elem.send_keys(Keys.ENTER)
             time.sleep(4)
