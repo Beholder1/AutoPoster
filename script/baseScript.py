@@ -5,10 +5,9 @@ import time
 
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
-from selenium.webdriver import ChromeOptions, ActionChains
+from selenium.webdriver import ChromeOptions
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-
 
 if getattr(sys, 'frozen', False):
     PROJECT_ROOT: str = os.path.dirname(os.path.abspath(str(sys.executable)))
@@ -63,14 +62,6 @@ class BaseScript:
         })
         print(options.arguments)
         return options
-
-    def human_type(self, driver, element, text):
-        actions = ActionChains(driver)
-        actions.move_to_element(element).click().perform()
-        time.sleep(random.uniform(0.2, 0.5))
-        for character in text:
-            actions.send_keys(character).perform()
-            time.sleep(random.uniform(0.1, 0.3))
 
     def facebook_login(self, driver, account_name):
         driver.get("https://facebook.com")

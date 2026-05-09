@@ -11,3 +11,4 @@ profiles/
 ### Python ###
 __pycache__/
 *.pyc
+*.exe
