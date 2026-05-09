@@ -1,5 +1,6 @@
 import os
 import random
+import sys
 import time
 
 from selenium import webdriver
@@ -9,7 +10,10 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
 
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if getattr(sys, 'frozen', False):
+    PROJECT_ROOT: str = os.path.dirname(os.path.abspath(str(sys.executable)))
+else:
+    PROJECT_ROOT: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 class BaseScript:
