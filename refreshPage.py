@@ -22,7 +22,7 @@ class RefreshPage:
         ttk.Label(self.refresh_page, text="Do końca: ").grid(row=2, column=0)
         ttk.Checkbutton(self.refresh_page, variable=self.to_end_var).grid(row=2, column=1, sticky="w")
 
-        def chooseNextStep(skip_choosing_accounts: bool):
+        def choose_next_step(skip_choosing_accounts: bool):
             if skip_choosing_accounts:
                 accounts = []
                 for i in db.fetch("parts", "name"):
@@ -34,7 +34,7 @@ class RefreshPage:
 
         run_button = tk.Button(self.refresh_page, background=menu_color, width=8, text="Uruchom",
                                activebackground=active_color, relief=tk.SOLID, borderwidth=1,
-                               command=lambda: chooseNextStep(self.all_accounts_var.get()))
+                               command=lambda: choose_next_step(self.all_accounts_var.get()))
         run_button.grid(row=3, column=1, sticky="w")
 
     def get_page(self) -> tk.Frame:

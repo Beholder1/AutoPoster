@@ -7,8 +7,8 @@ from script import mainScript
 class ChooseProducts:
     def __init__(self, db, number_of_products, hide: bool, only_one: bool, accounts):
         self.db = db
-        activeColor = "#FDA50F"
-        menuColor = '#FD6A02'
+        active_color = "#FDA50F"
+        menu_color = '#FD6A02'
 
         def open_script(hide, accounts, products, images):
             root.destroy()
@@ -76,7 +76,7 @@ class ChooseProducts:
                 images.append(list(entry.get().split(",")))
             return images
 
-        button = tk.Button(frame, text="Uruchom", background=menuColor, activebackground=activeColor, relief=tk.SOLID,
+        button = tk.Button(frame, text="Uruchom", background=menu_color, activebackground=active_color, relief=tk.SOLID,
                            borderwidth=1,
                            command=lambda: open_script(hide, accounts, products_get(), images_get()))
         button.grid(row=number_of_products + 1, column=1)

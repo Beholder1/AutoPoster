@@ -2,7 +2,6 @@ import random
 import time
 import traceback
 
-import clipboard
 import selenium.common.exceptions
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -72,9 +71,7 @@ class MainScript(BaseScript):
 
                     # Tytuł
                     inputs = driver.find_elements(By.TAG_NAME, "input")
-                    clipboard.copy(product[2])
-                    inputs[5].send_keys(Keys.CONTROL + "v")
-                    # title.send_keys(product[2])
+                    inputs[5].send_keys(product[2])
 
                     # Cena
                     inputs[6].send_keys(product[3])

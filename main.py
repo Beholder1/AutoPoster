@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, filedialog
 
+import activityPage
 import editAccount
 import editLocation
 import editProduct
@@ -103,11 +104,11 @@ class Main:
         frame3.grid(row=0, column=1, sticky="nwse")
 
         # DODAJ
-        self.imageNames = []
+        self.image_names = []
 
         def addImage(frame, button):
             i = 4
-            self.imageNames = filedialog.askopenfilenames(initialdir="/", title="Wybierz zdjęcia", filetypes=[
+            self.image_names = filedialog.askopenfilenames(initialdir="/", title="Wybierz zdjęcia", filetypes=[
                 ("Obrazy", ".bmp .tif .tiff .png .gif .jpg .jpeg .jfif .pjpeg .pjp .webp")])
             # for name in self.imageNames:
             #     button.grid(row=i+1, column=1)
@@ -122,7 +123,7 @@ class Main:
                 db.save_product(product, title, price, desc)
                 p = db.find_product_by_name(product)[0]
                 db.save_categories_for_products(p, category)
-                for name_to_save in self.imageNames:
+                for name_to_save in self.image_names:
                     db.save_image(name_to_save, p)
 
         frame3a = tk.Frame(frame3, bg="white", relief=tk.RIDGE, borderwidth=1)
@@ -240,11 +241,13 @@ class Main:
         button.grid(row=2, column=1)
 
         refresh_frame = refreshPage.RefreshPage(root, db, bg_color, menu_color, active_color).get_page()
+        activity_frame = activityPage.ActivityPage(root, db, bg_color, menu_color, active_color).get_page()
         home_frame = homePage.HomePage(root, db, bg_color, menu_color, active_color).get_page()
 
         buttons_data = [
             ("Strona główna", home_frame),
             ("Odświeżanie", refresh_frame),
+            ("Aktywność", activity_frame),
             ("Konta", frame2),
             ("Produkty", frame3),
             ("Lokalizacje", frame4)
