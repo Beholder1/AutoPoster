@@ -12,3 +12,8 @@ profiles/
 __pycache__/
 *.pyc
 *.exe
+
+### Konfiguracja lokalna (adres API, token sesji, ustawienia per maszyna) ###
+api_url.txt
+session.txt
+settings.json

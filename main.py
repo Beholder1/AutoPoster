@@ -7,12 +7,12 @@ import editLocation
 import editProduct
 import homePage
 import refreshPage
-from db import Database
+from api import Api
 
 
 class Main:
-    def __init__(self):
-        db = Database("store.db")
+    def __init__(self, db):
+        self.logout_requested = False
         bg_color = '#FCFCFF'
         active_color = "#FDA50F"
         menu_color = '#FD6A02'
@@ -119,12 +119,7 @@ class Main:
             #     i+=1
 
         def addProduct(product, title, price, desc, category):
-            with db.transaction():
-                db.save_product(product, title, price, desc)
-                p = db.find_product_by_name(product)[0]
-                db.save_categories_for_products(p, category)
-                for name_to_save in self.image_names:
-                    db.save_image(name_to_save, p)
+            db.create_product(product, title, price, desc, [category], self.image_names)
 
         frame3a = tk.Frame(frame3, bg="white", relief=tk.RIDGE, borderwidth=1)
         frame3a.grid(row=0, column=0, pady=5, padx=5)
@@ -262,13 +257,30 @@ class Main:
 
         root.grid_columnconfigure(1, weight=1)
 
-        def on_close():
-            db.close()
-            root.destroy()
-
-        root.protocol("WM_DELETE_WINDOW", on_close)
+        root.protocol("WM_DELETE_WINDOW", root.destroy)
         root.mainloop()
 
 
 if __name__ == "__main__":
-    Main()
+    from auth import AuthWindow
+
+    try:
+        db = Api()
+    except Exception as e:
+        from tkinter import messagebox
+        hidden = tk.Tk()
+        hidden.withdraw()
+        messagebox.showerror("Błąd konfiguracji", str(e))
+        hidden.destroy()
+        raise
+    try:
+        while True:
+            if not db.resume_session():
+                if AuthWindow(db).show() is None:
+                    break  # zamknieto okno logowania
+            app = Main(db)
+            if not app.logout_requested:
+                break
+            # po wylogowaniu wracamy do okna logowania
+    finally:
+        db.close()
